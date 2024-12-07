@@ -1,9 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
     const Task = sequelize.define("Task",{
-      taskId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      taskId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+       },
       taskTitle: DataTypes.STRING,
       priority: DataTypes.STRING,
-      dueDate: DataTypes.DATE,
+      dueDate: DataTypes.DATEONLY,
       taskStatus: DataTypes.STRING,
       description: DataTypes.TEXT,
       fileUrl: DataTypes.STRING,

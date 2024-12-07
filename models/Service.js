@@ -1,6 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const  Service = sequelize.define("Service",{
-      serviceId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      serviceId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       serviceName: DataTypes.STRING,
       category: DataTypes.STRING,
       price: DataTypes.FLOAT,

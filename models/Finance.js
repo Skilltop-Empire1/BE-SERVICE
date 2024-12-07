@@ -1,6 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const Finance = sequelize.define("Finance",{
-      financeId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      financeId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+       },
       expenseCategory: DataTypes.STRING,
       expensesDescription: DataTypes.STRING,
       amount: DataTypes.FLOAT,

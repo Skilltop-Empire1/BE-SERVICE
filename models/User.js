@@ -1,6 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User",{
-      userId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      userId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+       },
       email: {type: DataTypes.STRING,allowNull:false},
       password: {type: DataTypes.STRING,allowNull:false},
       name: {
@@ -101,7 +104,8 @@ module.exports = (sequelize, DataTypes) => {
   
     User.associate = (models) => {
       User.belongsTo(models.Organization,{
-        foreignKey:"name",
+        foreignKey: "orgId", 
+        as: "organization"
         
       });
       User.hasMany(models.Service);

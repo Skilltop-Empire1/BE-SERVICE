@@ -1,9 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
     const Report = sequelize.define("Report",{
-      reportId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      reportId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+       },
       reportTitle: DataTypes.STRING,
       reportType: DataTypes.STRING,
-      dateRangeFrom: DataTypes.DATE,
+      dateRangeFrom: DataTypes.DATEONLY,
       dateRangeTo: DataTypes.DATE,
       report: DataTypes.TEXT,
       fileUrl: DataTypes.STRING,

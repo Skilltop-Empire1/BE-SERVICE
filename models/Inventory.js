@@ -1,13 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
     const Inventory = sequelize.define("Inventory",{
-      inventoryId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+      inventoryId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+       },
       itemName: DataTypes.STRING,
       category: DataTypes.STRING,
       itemId: DataTypes.STRING,
       quantity: DataTypes.INTEGER,
       totalValue: DataTypes.FLOAT,
       assignedTo: DataTypes.STRING,
-      datePurchased: DataTypes.DATE,
+      datePurchased: DataTypes.DATEONLY,
       note: DataTypes.TEXT,
     });
   

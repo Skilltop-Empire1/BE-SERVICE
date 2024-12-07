@@ -5,19 +5,19 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       senderId: {
-        type: DataTypes.INTEGER, 
+        type: DataTypes.UUID, 
         allowNull: false,
       },
       recipientId: {
-        type: DataTypes.INTEGER, 
+        type: DataTypes.UUID, 
         allowNull: false,
       },
       sentAt: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW, 
       },
       readAt: {
-        type: DataTypes.DATE, 
+        type: DataTypes.DATEONLY, 
         allowNull: true,
       },
       status: {
