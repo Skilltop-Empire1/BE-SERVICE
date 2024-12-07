@@ -3,7 +3,10 @@ module.exports = (sequelize, DataTypes) => {
       userId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
       email: {type: DataTypes.STRING,allowNull:false},
       password: {type: DataTypes.STRING,allowNull:false},
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       department: DataTypes.STRING,
       employeeType: DataTypes.STRING,
       status: DataTypes.STRING,
@@ -97,7 +100,10 @@ module.exports = (sequelize, DataTypes) => {
     });
   
     User.associate = (models) => {
-      User.belongsTo(models.Organization);
+      User.belongsTo(models.Organization,{
+        foreignKey:"name",
+        
+      });
       User.hasMany(models.Service);
       User.hasMany(models.Task);
       User.hasMany(models.Report);
