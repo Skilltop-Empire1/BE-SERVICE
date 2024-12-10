@@ -2,6 +2,7 @@
 const { User, Organization } = require("../models");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken")
 const userValidation = require("../validation/userValidation");
 
 // **************************************************************************************
@@ -65,7 +66,38 @@ class UserClass {
 
   //*********************************************************************************** */
 
-  signin = async () => {}; //end of signin method
+  signin = async (req, res) => {
+    const { email, password } = req.body;
+
+  //validate users
+  const { error } = userValidation.loginValidation.validate(req.body);
+  if (error) {
+    return res.status(404).json(error.details[0].message);
+  }
+
+  // check if user exist
+  const userIsRegistered = await User.findOne({ where: { email } }); 
+  if (!userIsRegistered) {
+    return res.status(400).json({msg: "User not found"});
+  }
+  const matchpassword = await bcrypt.compare(password, userIsRegistered.password);
+  if (!matchpassword) {
+      return res.status(404).json({ msg: " You have entered incorrect login details" });
+    }
+
+  // create signin token
+  const token = jwt.sign({userId:userIsRegistered.userId, email: userIsRegistered.email, password: userIsRegistered.password}, process.env.SECRET_KEY, { expiresIn: '1h' })
+  res.json({token, id: userIsRegistered.userId, email: userIsRegistered.email, role:userIsRegistered.role });
+  
+}; //end of signin method
 }
 const usersClass = new UserClass();
 module.exports = usersClass;
+
+
+
+
+
+//   
+// };
+
