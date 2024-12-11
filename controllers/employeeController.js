@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer")
-const {User} = require("../models")
+const {User, Organization} = require("../models")
 const genePass = require("../utils/geneatePassword")
 const bcrypt = require("bcryptjs")
 const cloudinary = require("../config/cloudinary")
@@ -19,7 +19,7 @@ let mailTransporter = nodemailer.createTransport({
 exports.addEmployee = async (req,res) => {
     const {userId} = req.user
 
-    const {firstName,lastName,email,role,dept,type,status,task,desc,note} = req.body
+    const {firstName,lastName,email,role,dept,type,status,task,note} = req.body
     try {
        let profileUrl = null
        if(req.file){
@@ -70,6 +70,17 @@ exports.inviteEmployee = async(req,res) =>{
     
     mailTransporter.sendMail(mailOption);
         res.status(200).json({msg:"password generated successfully"})
+    } catch (error) {
+        res.status(500).json({msg:error.msg})
+    }
+}
+
+exports.getEmployees = async (req,res) => {
+    const {userId} = req.user
+    try {
+        const userName = await User.findPk(userId)
+        const name = userName.name
+        const orgName = await Organization.findOne({where:{name}})
     } catch (error) {
         res.status(500).json({msg:error.msg})
     }

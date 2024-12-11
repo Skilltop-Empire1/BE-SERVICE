@@ -51,7 +51,7 @@ class UserClass {
    
     // create user if not found
     const hashedPassword = await bcrypt.hash(password, 10);
-    const createUser = await User.create({email: email, password: hashedPassword});
+    const createUser = await User.create({email: email, password: hashedPassword,orgId:createOrg.orgId});
     try {
       if (createOrg && createUser) {
         console.log(createOrg, createUser);
