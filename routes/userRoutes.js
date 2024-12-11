@@ -1,7 +1,7 @@
 // import required module
 const express = require("express")
 const user= require("../controllers/userController")
-const {loginJWTAuth}= require("../middleware/authenticationMiddleware")
+const {loginJWTAuth}= require("../middlewares/authenticationMiddleware")
 const router = express.Router()
 
 // required routes

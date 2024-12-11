@@ -3,15 +3,16 @@ const { User, Organization } = require("../models");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken")
-const userValidation = require("../validation/userValidation");
-const loginAuth = require("../middleware/authenticationMiddleware");
+const userValidation = require("../validations/userValidation");
+
 
 // **************************************************************************************
 // Creating the users object
 class UserClass {
   // welcome  method
-  welcome = async (req, res) => {
+  welcome = async (req, res, err) => {
     const getUser = await User.findAll()
+    if (err){console.log(err)}
     res.json(getUser);
   }; //end of welcom method
 
@@ -113,8 +114,3 @@ module.exports = usersClass;
 
 
 
-// const accessToken = jwt.sign({ username: user.username, id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-// // Respond with the token
-// res.json({ accessToken });
-// });
