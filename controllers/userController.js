@@ -2,14 +2,18 @@
 const { User, Organization } = require("../models");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken")
 const userValidation = require("../validations/userValidation");
+
 
 // **************************************************************************************
 // Creating the users object
 class UserClass {
   // welcome  method
-  welcome = async (req, res) => {
-    res.json({ msg: "Welcome to our work" });
+  welcome = async (req, res, err) => {
+    const getUser = await User.findAll()
+    if (err){console.log(err)}
+    res.json(getUser);
   }; //end of welcom method
 
   // ****************************************************************************************
@@ -64,39 +68,49 @@ class UserClass {
   }; // end of signup method
 
   //*********************************************************************************** */
-
   signin = async (req, res) => {
     const { email, password } = req.body;
 
-  //validate users
-  const { error } = userValidation.loginValidation.validate(req.body);
-  if (error) {
-    return res.status(404).json(error.details[0].message);
-  }
-
-  // check if user exist
-  const userIsRegistered = await User.findOne({ where: { email } }); 
-  if (!userIsRegistered) {
-    return res.status(400).json({msg: "User not found"});
-  }
-  const matchpassword = await bcrypt.compare(password, userIsRegistered.password);
-  if (!matchpassword) {
-      return res.status(404).json({ msg: " You have entered incorrect login details" });
+    // Validate user input
+    const { error } = userValidation.loginValidation.validate(req.body);
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
     }
 
-  // create signin token
-  const token = jwt.sign({userId:userIsRegistered.userId, email: userIsRegistered.email, password: userIsRegistered.password}, process.env.SECRET_KEY, { expiresIn: '1h' })
-  res.json({token, id: userIsRegistered.userId, email: userIsRegistered.email, role:userIsRegistered.role });
-  
-}; //end of signin method
+    // Check if user exists
+    const userIsRegistered = await User.findOne({ where: { email } });
+    if (!userIsRegistered) {
+        return res.status(400).json({ msg: "User not found" });
+    }
+
+    // Compare password
+    const matchPassword = await bcrypt.compare(password, userIsRegistered.password);
+    if (!matchPassword) {
+        return res.status(400).json({ msg: "You have entered incorrect login details" });
+    }
+
+    // Create signin token
+    const accessToken = jwt.sign(
+        { id: userIsRegistered.userId, email: userIsRegistered.email },
+        process.env.SECRET_KEY,
+        { expiresIn: '1h' }
+    );
+
+    // Send response
+    res.status(200).json({
+        accessToken,
+        id: userIsRegistered.userId,
+        email: userIsRegistered.email,
+        role: userIsRegistered.role,
+    });
+};
+
+
+
 }
 const usersClass = new UserClass();
 module.exports = usersClass;
 
 
 
-
-
-//   
-// };
 
