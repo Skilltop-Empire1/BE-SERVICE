@@ -46,14 +46,14 @@ const messageRoute = require("./routes/messageRoutes")
 
 
 
-app.use("/api/IMS/user", userRoute);
-app.use("/api/IMS/service", serviceRoute);
-app.use("/api/IMS/TASK", taskRoute);
-app.use("/api/IMS/client", clientRoute);
-app.use("/api/IMS/report", reportRoute);
-app.use("/api/IMS/finance", financeRoute);
-app.use("/api/IMS/inventory", inventoryRoute);
-app.use("/api/IMS/message", messageRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/service", serviceRoute);
+app.use("/api/v1/TASK", taskRoute);
+app.use("/api/v1/client", clientRoute);
+app.use("/api/v1/report", reportRoute);
+app.use("/api/v1/finance", financeRoute);
+app.use("/api/v1/inventory", inventoryRoute);
+app.use("/api/v1/message", messageRoute);
 
 
 
@@ -86,56 +86,3 @@ const startServer = async () => {
   startServer();
 
 
-
-
-
-
-
-  // //************user signin  ***********/
-
-  // login = async (req, res) => {
-  //   const { email, password } = req.body;
-
-  //   //validate user login
-  //   const { error } = userschema.validateLogin.validate(req.body);
-  //   if (error) {
-  //     return res.status(404).json(error.details[0].message);
-  //   }
-
-  //   //************check for user ************ */
-  //   const user = await userModel.User.findOne({ where: { email } }); 
-  //   const staff = await userModel.Staff.findOne({ where: { email } });
-  //   if (!user && !staff) {
-  //     return res.status(400).send("Email is not registered");
-  //   }
-
-  //   const account = user || staff
-
-
-  //   const isMatch = await bcrypt.compare(password, account.password);
-  //   try {
-  //     if (!isMatch) {
-  //       return res.status(404).json({ msg: "Incorrect login details" });
-  //     } else {
-
-  //        // ******************Create JWT token ***********************
-  //       let id;
-  //       if(user){
-  //         id=user.userId
-  //       }else{
-  //         id=staff.staffId
-  //       }
-  //       let permission
-  //       if (staff) {
-  //         permission=staff.permissions
-  //       };
-  //       console.log( "authpermission", permission);
-  //       console.log( "email", account.email);
-  //       const token = jwt.sign({id, username: account.username|| account.userName, email: account.email, role: account.role, permission}, process.env.SECRET_KEY, { expiresIn: '1h' })
-  //       res.json({token, id: id, username: account.username|| account.userName, email: account.email, role:account.role });
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ message: 'Server error' });
-  //   }
-  // };

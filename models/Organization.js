@@ -13,7 +13,10 @@ module.exports = (sequelize,DataTypes) => {
   });
 
   Organization.associate = (models) => {
-    Organization.hasMany(models.User);
+    Organization.hasMany(models.User,{
+      foreignKey:"orgId",
+      as:"user"
+    });
     Organization.hasMany(models.Service);
     Organization.hasMany(models.Client);
     Organization.hasMany(models.Inventory);
