@@ -2,8 +2,7 @@
 const { User, Organization } = require("../models");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
-const jwt = require("jsonwebtoken")
-const userValidation = require("../validation/userValidation");
+const userValidation = require("../validations/userValidation");
 
 // **************************************************************************************
 // Creating the users object

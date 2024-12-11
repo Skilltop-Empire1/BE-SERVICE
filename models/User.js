@@ -5,6 +5,8 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
        },
       email: {type: DataTypes.STRING,allowNull:false},
+      firstName: {type: DataTypes.STRING,allowNull:false},
+      lastName: {type: DataTypes.STRING,allowNull:false},
       password: {type: DataTypes.STRING,allowNull:false},
       // name: {
       //   type: DataTypes.STRING,
@@ -105,10 +107,11 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = (models) => {
       User.belongsTo(models.Organization,{
         foreignKey: "orgId", 
-        as: "organization"
+        as: "name"
         
       });
       User.hasMany(models.Service);
+      User.hasMany(models.Task);
       User.hasMany(models.Task);
       User.hasMany(models.Report);
       User.hasOne(models.Finance);
