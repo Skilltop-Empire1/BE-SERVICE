@@ -1,5 +1,5 @@
 const { Inventory } = require('../models');
-const { inventorySchema } = require('../validation/inventoryValidation');
+const { inventorySchema } = require('../validations/inventoryValidation');
 const { Op } = require("sequelize");
 
 // Create a new inventory item

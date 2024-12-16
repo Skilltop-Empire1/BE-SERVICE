@@ -1,5 +1,5 @@
 const {Service , Inventory , Organization} = require('../models');
-const { serviceSchema } = require('../validation/serviceValidation');
+const { serviceSchema } = require('../validations/serviceValidation');
 const { Op } = require("sequelize"); 
 
 
