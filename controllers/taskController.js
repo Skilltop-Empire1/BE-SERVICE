@@ -1,5 +1,6 @@
 const {Task,Service,User} = require("../models")
 const cloudinary = require("../config/cloudinary")
+const taskValiadtion = require("../validations/taskValidation")
 
 
 const createTask = async function (req,res) {
@@ -59,6 +60,40 @@ const getTask = async function (req,res){
     }
 }
 
+const editTask = async function (req,res){
+    const {title,servName,email,priority,dueDate,taskStatus,desc} = req.body
+   try {
+    const {id} = req.params
+    const task = await Task.findByPK(id)
+    if(!task) return res.status(404).json({msg:"Task not found"})
+    const assigned = await User.findOne({where:{email}})
+    const serviName = await Service.findOne({where:{serviceName:servName}})
+    if(!assigned) return res.status(404).json({msg:"Assined to not found"})
+    const fileUrl = task.fileUrl
+    if(req.file){
+        const result = await cloudinary.Uploader.upload(req.file.path,{
+            folder:"image",
+            width:300,
+            crop:"scale"
+        })
+        fileUrl = result.url
+    }
+    const updateTask = await task.update({
+        taskTitle:title || task.taskTitle,
+        service:serviName.serviceId || task.service,
+        assignTo:assigned.userId || task.assignTo,
+        priority:priority || task.priority,
+        dueDate:dueDate || task.dueDate,
+        taskStatus:taskStatus || task.taskStatus,
+        description:desc || task.description,
+        fileUrl:fileUrl || task.fileUrl
+})
+    res.status(201).json({msg:"Task updated successfully",data:updateTask})
+   } catch (error) {
+    
+   }
+}
+
 const deleteTask = async function (req,res){
     try {
         const {id} = req.params
@@ -73,5 +108,6 @@ module.exports = {
     createTask,
     getAllTask,
     getTask,
+    editTask,
     deleteTask
 }

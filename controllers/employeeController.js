@@ -4,6 +4,7 @@ const genePass = require("../utils/geneatePassword")
 const bcrypt = require("bcryptjs")
 const cloudinary = require("../config/cloudinary")
 const { Op } = require("sequelize")
+const employeeValidation = require("../validations/employeeValidation")
 
 let mailTransporter = nodemailer.createTransport({
     host:"mail.skilltopims.com",
