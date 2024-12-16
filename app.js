@@ -36,6 +36,7 @@ app.use(cors(corsOptions));
 app.use(morgan("tiny"));
 
 const userRoute = require("./routes/userRoutes");
+const employeeRoute = require("./routes/employeeRoutes");
 const serviceRoute = require("./routes/serviceRoutes");
 const taskRoute = require("./routes/taskRoutes");
 const clientRoute = require("./routes/clientRoutes");
@@ -47,6 +48,7 @@ const messageRoute = require("./routes/messageRoutes")
 
 
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/employee", employeeRoute);
 app.use("/api/v1/service", serviceRoute);
 app.use("/api/v1/TASK", taskRoute);
 app.use("/api/v1/client", clientRoute);

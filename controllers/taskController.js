@@ -21,7 +21,8 @@ try {
             crop:"scale"
         })
         fileUrl = result.url
-        const task = await Task.create({
+    }    
+    const task = await Task.create({
             taskTitle:title,
             service:serviName.serviceId,
             assignTo:assigned.userId,
@@ -32,13 +33,45 @@ try {
             fileUrl:url
         })
         res.status(201).json(task)
-    }
+   
 } catch (error) {
     res.status(500).json({"msg":error.message})
 }
 }
 
+const getAllTask = async function (req,res){
+    try {
+        const tasks = await Task.findAll()
+        res.status(200).json(tasks)
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+}
 
+const getTask = async function (req,res){
+    try {
+        const {id} =  req.params
+        const task = await Task.findByPK(id)
+        if(!task) return res.status(404).json({msg:"task not found"})
+        res.status(200).json(task)
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+}
+
+const deleteTask = async function (req,res){
+    try {
+        const {id} = req.params
+        const task = await Task.destroy({where:{id}})
+        if(!task) return res.status(404).json({msg:"Id not found"})
+        res.status(200).json({msg:"task deleted successfully"})
+    } catch (error) {
+        res.status(500).json(error.message)  
+    }
+}
 module.exports = {
-    createTask
+    createTask,
+    getAllTask,
+    getTask,
+    deleteTask
 }

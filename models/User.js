@@ -1,3 +1,5 @@
+const { validate } = require("node-cron");
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User",{
       userId: { type: DataTypes.UUID,
@@ -13,8 +15,15 @@ module.exports = (sequelize, DataTypes) => {
       //   allowNull: false,
       // },
       department: DataTypes.STRING,
+      phoneNo: DataTypes.STRING,
       employeeType: DataTypes.STRING,
-      status: DataTypes.STRING,
+      status: {
+        type: DataTypes.STRING,
+        defaultValue:"Active",
+        validate:{
+          isIn:[["Active","Busy","Offline"]]
+        }
+      },
       currentTask: DataTypes.STRING,
       additionalNotes: DataTypes.TEXT,
       profileUrl: DataTypes.STRING,

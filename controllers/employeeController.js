@@ -3,6 +3,7 @@ const {User, Organization} = require("../models")
 const genePass = require("../utils/geneatePassword")
 const bcrypt = require("bcryptjs")
 const cloudinary = require("../config/cloudinary")
+const { Op } = require("sequelize")
 
 let mailTransporter = nodemailer.createTransport({
     host:"mail.skilltopims.com",
@@ -18,8 +19,10 @@ let mailTransporter = nodemailer.createTransport({
 })
 exports.addEmployee = async (req,res) => {
     const {userId} = req.user
-
-    const {firstName,lastName,email,role,dept,type,status,task,note} = req.body
+    const user = await User.findByPk(userId)
+    if(!user) return res.status(404).json({msg:"user not found"})
+    const orgId = user.orgId
+    const {firstName,lastName,email,role,dept,type,status,task,note,phoneNo} = req.body
     try {
        let profileUrl = null
        if(req.file){
@@ -41,9 +44,11 @@ exports.addEmployee = async (req,res) => {
         status,
         currentTask:task,
         additionalNotes:note,
-        profileUrl
+        profileUrl,
+        phoneNo,
+        orgId
        })
-       res.status(201).json({msg:"Employee has been added successfully"})
+       res.status(201).json({msg:"Employee has been added successfully",data:createEmployee})
     } catch (error) {
         res.status(500).json({msg:error.msg})
     }
@@ -55,9 +60,9 @@ exports.inviteEmployee = async(req,res) =>{
     try {
         const userExist = await User.findOne({where:{email}})
         if(!userExist) return res.status(404).json({msg:"Email already exists"})
-        const geneatePassword = genePass()
+        const generatedPassword = genePass()
         console.log("pass",geneatePassword)
-        const hashedPassword = await bcrypt.hash(geneatePassword,10)
+        const hashedPassword = await bcrypt.hash(generatedPassword,10)
         const createUser = await userExist.update({
             password:hashedPassword
     })
@@ -75,13 +80,127 @@ exports.inviteEmployee = async(req,res) =>{
     }
 }
 
-exports.getEmployees = async (req,res) => {
-    const {userId} = req.user
+exports.getAllEmployees = async (req,res) => {
     try {
-        const userName = await User.findPk(userId)
-        const name = userName.name
-        const orgName = await Organization.findOne({where:{name}})
+        const {userId} = req.user
+        const user = await User.findByPk(userId)
+        if(!user) return res.status(404).json({msg:"user not found"})
+        const orgId = user.orgId
+        const getEmployees = await User.findAll({where:{orgId}})
+        res.status(200).json({getEmployees})
     } catch (error) {
         res.status(500).json({msg:error.msg})
+    }
+}
+
+exports.getEmployee = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.user;
+        const user = await User.findByPk(userId);
+        if (!user) return res.status(404).json({ msg: "User not found" });
+        const getEmployee = await User.findByPk(id);
+        if (!getEmployee) return res.status(404).json({ msg: "Employee not found" });
+        res.status(200).json({ data: getEmployee });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+exports.updateEmployee = async (req, res) => {
+    const { firstName, lastName, email, role, dept, type, status, task, note,phoneNo } = req.body;
+    try {
+        const { id } = req.params;
+        const { userId } = req.user;
+        const user = await User.findByPk(userId);
+        if (!user) return res.status(404).json({ msg: "User not found" });
+        const employee = await User.findByPk(id);
+        if (!employee) return res.status(404).json({ msg: "Employee not found" });
+        let profileUrl = employee.profileUrl;
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "image",
+                width: 300,
+                crop: "scale",
+            });
+            profileUrl = result.secure_url;
+        }
+        const updatedEmployee = await employee.update({
+            firstName: firstName || employee.firstName,
+            lastName: lastName || employee.lastName,
+            email: email || employee.email,
+            role: role || employee.role,
+            department: dept || employee.department,
+            employeeType: type || employee.employeeType,
+            status: status || employee.status,
+            currentTask: task || employee.currentTask,
+            additionalNotes: note || employee.additionalNotes,
+            phoneNo: phoneNo || employee.phoneNo,
+            profileUrl,
+        });
+        res.status(200).json({ msg: "Employee updated successfully", data: updatedEmployee });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+exports.deleteEmployee = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await User.findByPk(id);
+        if (!employee) return res.status(404).json({ msg: "Employee not found" });
+        await User.destroy({ where: { id } });
+        res.status(200).json({ msg: "Employee deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+};
+
+exports.searchEmployee = async (req,res) => {
+    const {
+        firstName,
+        lastName,
+        dept,
+        phoneNo,
+        sort,
+        limit,
+        page
+    } = req.query
+    try {
+        const {userId} = req.user
+        const user = await User.findByPk(userId)
+        if(!user) return res.status(404).json("user not found")
+        const orgId = user.orgId
+        const employeeFilter = {orgId}
+        if(firstName){
+            employeeFilter.firstName = {[Op.iLike]:`%${firstName}`}
+        }
+        if(lastName){
+            employeeFilter.lastName = {[Op.iLike]:`%${lastName}`}
+        }
+        if(dept){
+            employeeFilter.department = dept
+        }
+        if(phoneNo){
+            employeeFilter.phoneNo = phoneNo
+        }
+        let order = []
+        if(sort){
+            const [key,direction] = sort.split(':')
+            order.push([key,direction.toUpperCase()])
+        }
+        const employeePerPage = limit? parseInt(limit) :10
+        const currentPage = page? parseInt(page) : 1
+        const offSet = (currentPage-1)*employeePerPage
+
+        const searchEmployees = await User.findAll({
+            where:employeeFilter,
+            order,
+            limit:employeePerPage,
+            offSet
+        })
+        res.status(200).json(searchEmployees)
+    } catch (error) {
+        res.status(500).json(error.message)
     }
 }

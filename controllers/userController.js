@@ -97,6 +97,3 @@ module.exports = usersClass;
 
 
 
-//   
-// };
-
