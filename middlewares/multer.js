@@ -3,7 +3,7 @@ const path = require("path")
 
 const storage =  multer.diskStorage({
     destination: function(req,file,cb){
-        cb(null,path.join(__dirname,'..','/utils/image'))
+        cb(null,path.join(__dirname,"..","/utils/image"))
     },
     filename:function(req,file,cb){
         const timestamp = Date.now()

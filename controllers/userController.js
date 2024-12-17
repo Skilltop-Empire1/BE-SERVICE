@@ -91,7 +91,7 @@ class UserClass {
 
     // Create signin token
     const accessToken = jwt.sign(
-        { id: userIsRegistered.userId, email: userIsRegistered.email },
+        { id: userIsRegistered.userId, email: userIsRegistered.email,permission:userIsRegistered.permission },
         process.env.SECRET_KEY,
         { expiresIn: '1h' }
     );

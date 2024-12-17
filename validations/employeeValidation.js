@@ -22,15 +22,15 @@ const userValidationSchema = Joi.object({
       "string.base": "Last name must be a string",
     }),
 
-  password: Joi.string()
-    .min(8)
-    .required()
-    .messages({
-      "string.min": "Password must be at least 8 characters long",
-      "any.required": "Password is required",
-    }),
+  // password: Joi.string()
+  //   .min(8)
+  //   .required()
+  //   .messages({
+  //     "string.min": "Password must be at least 8 characters long",
+  //     "any.required": "Password is required",
+  //   }),
 
-  department: Joi.string()
+  dept: Joi.string()
     .allow(null, "")
     .messages({
       "string.base": "Department must be a string",
@@ -56,13 +56,13 @@ const userValidationSchema = Joi.object({
       "any.only": "Status must be one of ['Active', 'Busy', 'Offline']",
     }),
 
-  currentTask: Joi.string()
+  task: Joi.string()
     .allow(null, "")
     .messages({
       "string.base": "Current task must be a string",
     }),
 
-  additionalNotes: Joi.string()
+  note: Joi.string()
     .allow(null, "")
     .messages({
       "string.base": "Additional notes must be a string",
