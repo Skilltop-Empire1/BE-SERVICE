@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs")
 const cloudinary = require("../config/cloudinary")
 const { Op } = require("sequelize")
 const employeeValidation = require("../validations/employeeValidation")
+const fs = require("fs")
 
 let mailTransporter = nodemailer.createTransport({
     host:"mail.skilltopims.com",
@@ -24,16 +25,24 @@ exports.addEmployee = async (req,res) => {
     if(!user) return res.status(404).json({msg:"user not found"})
     const orgId = user.orgId
     const {firstName,lastName,email,role,dept,type,status,task,note,phoneNo} = req.body
+    const {error} = employeeValidation.validate(req.body)
+    if(error){
+        return res.status(400).json(error.details[0].message)
+    }
+
     try {
        let profileUrl = null
        if(req.file){
-        const result =  await cloudinary.Uploader.upload(req.file.path,{
+        const result =  await cloudinary.uploader.upload(req.file.path,{
             folder:"image",
             width:300,
             crop:"scale"
         })
+        console.log("url",result.url)
         profileUrl = result.url
+        fs.unlinkSync(req.file.path)
        } 
+
        const createEmployee = await User.create({
         firstName,
         lastName,
@@ -51,7 +60,8 @@ exports.addEmployee = async (req,res) => {
        })
        res.status(201).json({msg:"Employee has been added successfully",data:createEmployee})
     } catch (error) {
-        res.status(500).json({msg:error.msg})
+        console.log("error",error.message)
+        res.status(500).json({msg:error.message})
     }
 }
 
@@ -59,10 +69,12 @@ exports.addEmployee = async (req,res) => {
 exports.inviteEmployee = async(req,res) =>{
     const {email} = req.body
     try {
+        console.log("pass")
         const userExist = await User.findOne({where:{email}})
         if(!userExist) return res.status(404).json({msg:"Email already exists"})
+        console.log("user",userExist)
         const generatedPassword = genePass()
-        console.log("pass",geneatePassword)
+        console.log("pass",generatedPassword)
         const hashedPassword = await bcrypt.hash(generatedPassword,10)
         const createUser = await userExist.update({
             password:hashedPassword
@@ -71,12 +83,13 @@ exports.inviteEmployee = async(req,res) =>{
         from:process.env.EMAIL_USER,
         to: email,
         subject: "Welcome to the Company!",
-        text: `Hi ${userExist.lastName},\n\nYour account has been created. Your login credentials are:\n\nEmail: ${email}\nPassword: ${geneatePassword}\n\nPlease log in and update your password.\n\nThank you!`,
+        text: `Hi ${userExist.dataValues.lastName},\n\nYour account has been created. Your login credentials are:\n\nEmail: ${email}\nPassword: ${generatedPassword}\n\nPlease log in and update your password.\n\nThank you!`,
       }
     
     mailTransporter.sendMail(mailOption);
-        res.status(200).json({msg:"password generated successfully"})
+    res.status(200).json({msg:"password generated successfully"})
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({msg:error.msg})
     }
 }

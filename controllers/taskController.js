@@ -5,6 +5,10 @@ const taskValiadtion = require("../validations/taskValidation")
 
 const createTask = async function (req,res) {
     const {title,servName,email,priority,dueDate,taskStatus,desc} = req.body
+    const {error} = taskValiadtion.validate(req.body)
+    if(error){
+        return res.status(404).json(error.details[0].message)
+    }
     const serviName = await Service.findOne({where:{serviceName:servName}})
     if(!serviName){
         res.status(404).json({msg:"Service name not found"})
@@ -16,7 +20,7 @@ const createTask = async function (req,res) {
 try {
     let fileUrl = null
     if(req.file){
-        const result = await cloudinary.Uploader.upload(req.file.path,{
+        const result = await cloudinary.uploader.upload(req.file.path,{
             folder:"image",
             width:300,
             crop:"scale"
@@ -31,7 +35,7 @@ try {
             dueDate,
             taskStatus,
             description:desc,
-            fileUrl:url
+            fileUrl
         })
         res.status(201).json(task)
    
