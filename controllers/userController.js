@@ -105,6 +105,109 @@ class UserClass {
     });
 };
 
+// Forgot passworn functionaluty
+forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const { error } = userValidation.forgotPasswordValidation.validate(req.body);
+  if (error) {
+    return res.status(404).json(error.details[0].message);
+  }
+
+  //check if user exist
+  const user = await userModel.User.findOne({
+    where: { email },
+  });
+ 
+try {
+  if (!user) {
+    return res.status(404).json({ msg: "User does not exist" });
+  }
+} catch (error) {
+  console.log (error)
+  
+}
+    // const passwordLink = "www.gmail.com";
+//     let randomText = await randompassword.generateRandomPassword(50);
+//     let transporter = await  nodemailer.createTransport({
+//       host: "mail.skilltopims.com",
+//       port: 587,
+//       secure: false,
+//       auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//       },
+//       tls: {
+//         rejectUnauthorized: false
+//       }
+//     });
+
+//     const formLink = ""
+
+//     let mailOptions = await {
+//       from: {
+//         name: "IMS password reset link",
+//         address: process.env.EMAIL_USER,
+//       },
+//       to: user.email,
+//       subject: "IMS Reset link",
+//       text: `You have made a request to change a password. Kindly Click on the link to proceed with the password reset`,
+//       html:` <div style="font-family: Arial, sans-serif; color: #333;">
+//         <h2>Password Reset Request</h2>
+//         <p>Hello,</p>
+//         <p>We received a request to reset your password for your IMS account. If you made this request, please click the button below to reset your password:</p>
+//         <a href="${process.env.CLIENT2_URL}/passwordConfirmation?token=${randomText}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
+//         <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+//         <p>Best regards,<br/>IMS Support Team</p>
+//         </div>`,
+     
+//     };
+
+//     res.json({
+//       msg: "An email has been sent to you with a link to reset your password. If not seen in your inbox, please check your spam.",
+//     });
+
+//     return await transporter.sendMail(mailOptions);
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// //**********route to submit reset password and redirect to login */
+
+// resetSubmit = async (req, res) => {
+//   const { email, password, confirmPassword } = req.body;
+// //validate details
+//   const { error } = userschema.validatePasswordReset.validate(req.body);
+//   if (error) {
+//     return res.status(404).json(error.details[0].message);
+//   }
+//   const user = await userModel.User.findOne({ where: { email } });
+//   if (!user) {
+//     return res.status(400).send("Enter a correct email address");
+//   }
+//   if (password !==confirmPassword){
+//     return res.json({msg: "Password mismatch"})
+//   }
+//   const hash = await bcrypt.hash(password, 10);
+//   const updatePassword = await userModel.User.update(
+//     { password: hash },
+//     { where: { email: email } }
+//   );
+//   try {
+//     if (!updatePassword) {
+//       return res.status(404).json({ msg: "Password reset failed" });
+//     } else {
+//       console.log(updatePassword);
+//       res.status(201).json({ msg: "Password updated successfully" });
+//       // return res.redirect('https://www.example.com')
+//       return
+//     }
+//   } catch (error) {
+//     throw error;
+//   }
+};
+
 
 
 }
