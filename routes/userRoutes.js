@@ -11,6 +11,8 @@ const router = express.Router()
 router.route("/all-users").get(loginJWTAuth, user.welcome)
 router.route("/signup").post(user.signup)
 router.route("/signin").post(user.signin)
+router.route("/password-reset").post(user.forgotPassword)
+router.route("/reset").put(user.resetPassword)
 
 //export module
 module.exports = router
