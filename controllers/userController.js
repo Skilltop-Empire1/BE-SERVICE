@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const userValidation = require("../validations/userValidation");
 const nodemailer = require("nodemailer");
 const randomText = require("../middlewares/randomText");
+const { where } = require("sequelize");
 require("dotenv").config();
 
 // **************************************************************************************
@@ -213,10 +214,148 @@ class UserClass {
   } //reset password closing tag
 
 
+  // change password functionality ********************************************
+  changePassword = async (req, res) =>{
+    const { password, confirmPassword } = req.body
+    try {
+      //validate details
+      const { error } = userValidation.changePasswordValidation.validate(req.body);
+      if (error) {
+        return res.status(404).json(error.details[0].message);
+      }
+      const {email} = req.user
+      const user = User.findOne({where: {email}})
+      if(!user){
+        res.status(404).json({msg: "User does not exist"})
+      }
+      if (password !== confirmPassword) {
+        return res.status(400).json({ msg: "Password mismatch" });
+        }
+      //update password
+      const hash = await bcrypt.hash(password, 10);
+      const updatepassword = await User.update(
+        { password: hash }, { where: { email: email } 
+      });  
+      if(updatepassword){
+        return res
+          .status(200)
+          .json({ msg: "User password updated successfully" });
+      }else{
+        return res
+          .status(404)
+          .json({ msg: "Password update failed" });
+      }
+    } catch (error) {
+      throw error      
+    }
+  }// end of method
 
-}
-
-
-
+} //class end
+// instance of class creation
 const usersClass = new UserClass();
 module.exports = usersClass;
+
+
+
+
+
+
+
+
+
+
+
+
+
+//     //**********queery to check if user exist */
+//     const user = await userModel.User.findOne({ where: { email } });
+//     const staff = await userModel.Staff.findOne({ where: { email } });
+    
+//     const account = user || staff
+//     const isMatch = await bcrypt.compare(oldPassword, account.password);
+//     if (!isMatch) {return res.status(404).json({ msg: "current password is incorrect" });}
+//     if (!account) {
+//       return res.status(400).send("User does not exist");
+//     } 
+//     if (password !== confirmPassword) {
+//       return res.json({ msg: "New passwords does not match match" });
+//     }
+// //update code
+
+//     const hash = await bcrypt.hash(password, 10);
+//     try {
+//       const userPasswordUpdate = await userModel.User.update(
+//         { password: hash },
+//         { where: { email: email } }
+//       );
+
+//       const staffPasswordUpdate = await userModel.Staff.update(
+//         { password: hash },
+//         { where: { email: email } }
+//       );
+
+//       if(userPasswordUpdate || staffPasswordUpdate){
+//         return res
+//           .status(200)
+//           .json({ msg: "User password updated successfully" });
+//       }else{
+//         return res
+//           .status(404)
+//           .json({ msg: "Password update failed" });
+//       }
+      
+//     } catch (error) {
+//       return error
+//     }
+//   };
+
+
+
+
+
+
+// const { email } = req.user;
+
+//   try {
+
+//     // Check if the staff exists
+//     const staff = await Staff.findOne({ where: { email } });
+//     if (!staff) {
+//       return res.status(404).json({ msg: "Staff with the provided email does not exist" });
+//     }
+
+//     console.log("Old password (plaintext):", oldPassword);
+//     console.log("Stored hashed password:", staff.password);
+
+//     // Check if old password matches the current password
+//     const isMatch = await bcrypt.compare(oldPassword, staff.password);
+//     console.log("Password match result:", isMatch);
+
+//     if (!isMatch) {
+//       return res.status(400).json({ msg: "Incorrect old password" });
+//     }
+
+//     // Check if new password matches confirm password
+//     if (password !== confirmPassword) {
+//       return res.status(400).json({ msg: "New password must match the confirmation" });
+//     }
+
+//     // Hash the new password
+//     const hash = await bcrypt.hash(password, 10);
+
+//     // Update the staff's password
+//     const [updated] = await Staff.update(
+//       { password: hash },
+//       { where: { email } }
+//     );
+
+//     if (updated) {
+//       return res.status(200).json({ msg: "Staff password updated successfully" });
+//     } else {
+//       return res.status(500).json({ msg: "Password update failed" });
+//     }
+//   } catch (error) {
+//     console.error("Error updating password:", error);
+//     return res.status(500).json({ msg: "An error occurred while updating the password" });
+//   }
+// };

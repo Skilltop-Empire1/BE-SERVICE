@@ -13,6 +13,7 @@ router.route("/signup").post(user.signup)
 router.route("/signin").post(user.signin)
 router.route("/password-reset").post(user.forgotPassword)
 router.route("/reset").put(user.resetPassword)
+router.route("/change-password").put(loginJWTAuth, user.changePassword)
 
 //export module
 module.exports = router
