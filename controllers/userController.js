@@ -105,9 +105,9 @@ class UserClass {
 
     // Create signin token
     const accessToken = jwt.sign(
-      { id: userIsRegistered.userId, email: userIsRegistered.email },
-      process.env.SECRET_KEY,
-      { expiresIn: "1h" }
+        { id: userIsRegistered.userId, email: userIsRegistered.email,permission:userIsRegistered.permission },
+        process.env.SECRET_KEY,
+        { expiresIn: '1h' }
     );
 
     // Send response
@@ -254,6 +254,63 @@ class UserClass {
 // instance of class creation
 const usersClass = new UserClass();
 module.exports = usersClass;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//     //**********queery to check if user exist */
+//     const user = await userModel.User.findOne({ where: { email } });
+//     const staff = await userModel.Staff.findOne({ where: { email } });
+    
+//     const account = user || staff
+//     const isMatch = await bcrypt.compare(oldPassword, account.password);
+//     if (!isMatch) {return res.status(404).json({ msg: "current password is incorrect" });}
+//     if (!account) {
+//       return res.status(400).send("User does not exist");
+//     } 
+//     if (password !== confirmPassword) {
+//       return res.json({ msg: "New passwords does not match match" });
+//     }
+// //update code
+
+//     const hash = await bcrypt.hash(password, 10);
+//     try {
+//       const userPasswordUpdate = await userModel.User.update(
+//         { password: hash },
+//         { where: { email: email } }
+//       );
+
+//       const staffPasswordUpdate = await userModel.Staff.update(
+//         { password: hash },
+//         { where: { email: email } }
+//       );
+
+//       if(userPasswordUpdate || staffPasswordUpdate){
+//         return res
+//           .status(200)
+//           .json({ msg: "User password updated successfully" });
+//       }else{
+//         return res
+//           .status(404)
+//           .json({ msg: "Password update failed" });
+//       }
+      
+//     } catch (error) {
+//       return error
+//     }
+//   };
+
 
 
 
