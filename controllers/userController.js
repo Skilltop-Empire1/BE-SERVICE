@@ -89,7 +89,7 @@ class UserClass {
     // Check if user exists
     const userIsRegistered = await User.findOne({ where: { email } });
     if (!userIsRegistered) {
-      return res.status(400).json({ msg: "User not found" });
+      return res.status(404).json({ msg: "User not found" });
     }
 
     // Compare password
