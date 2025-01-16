@@ -9,6 +9,7 @@ const cron = require("node-cron")
 const {initializeSocket} = require("./config/socket")
 const server = http.createServer(app)
 const io =initializeSocket(server)
+const swaggerDocs = require("./swagger");
 
 require("./models")
 
@@ -57,6 +58,8 @@ app.use("/api/v1/finance", financeRoute);
 app.use("/api/v1/inventory", inventoryRoute);
 app.use("/api/v1/message", messageRoute);
 
+const client_url = process.env.CLIENT_URL || "http://localhost:5000";
+swaggerDocs(app, client_url);
 
 
 cron.schedule('*/30 * * * *', async ()=> {
