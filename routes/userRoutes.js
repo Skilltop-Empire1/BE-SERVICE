@@ -8,7 +8,28 @@ const swaggerui = require("swagger-ui-express")
 const router = express.Router()
 
 // required routes
+
+ /** GET Methods */
+    /**
+     * @openapi
+     * '/api/v1/user/all-users':
+     *  get:
+     *     tags:
+     *     - User Controller
+     *     summary: Get all users information
+     *     parameters:
+     *      - name: username
+     *        in: path
+     *        description: The username of the user
+     *        required: true
+     *     responses:
+     *      200:
+     *        description: Returns users information
+     * 
+     */
 router.route("/all-users").get(loginJWTAuth, user.welcome)
+
+
 
  /** POST Methods */
     /**
@@ -40,18 +61,144 @@ router.route("/all-users").get(loginJWTAuth, user.welcome)
      *                default: johnDoe20!@
      *     responses:
      *      201:
-     *        description: Created
-     *      409:
-     *        description: Conflict
+     *        description: User created successfully
+     *      403:
+     *        description: New users not allowed, Please contact support
      *      404:
-     *        description: Not Found
-     *      500:
-     *        description: Server Error
+     *        description: A User with these details already exists
      */
 router.route("/signup").post(user.signup)
+
+
+/** POST Methods */
+    /**
+     * @openapi
+     * '/api/v1/user/signin:
+     *  post:
+     *     tags:
+     *     - User Controller
+     *     summary: signup a user
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *            type: object
+     *            required:
+     *              - email
+     *              - password
+     *            properties: 
+     *              email:
+     *                type: string
+     *                default: johndoe@mail.com
+     *              password:
+     *                type: string
+     *                default: johnDoe20!@
+     *     responses:
+     *      200:
+     *        description: accessToken, id, email, role
+     *      400:
+     *        description: You have entered incorrect login details
+     *      404:
+     *        description: User not found
+     *     
+     */
 router.route("/signin").post(user.signin)
+
+
+/** POST Methods */
+    /**
+     * @openapi
+     * '/api/v1/user/password-reset':
+     *  post:
+     *     tags:
+     *     - User Controller
+     *     summary: Password reset. Sents password reset links to user's email.
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *            type: object
+     *            required:
+     *              - email
+     *            properties: 
+     *              email:
+     *                type: string
+     *                default: johndoe@mail.com
+     *     responses:
+     *      200:
+     *        description: An email has been sent to you with a link to reset your password. If not seen in your inbox, please check your spam.
+     *      404:
+     *        description: User does not exist
+     */
 router.route("/password-reset").post(user.forgotPassword)
+
+
+/** PUT Methods */
+    /**
+     * @openapi
+     * '/api/v1/user/reset':
+     *  put:
+     *     tags:
+     *     - User Controller
+     *     summary: update users password
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *            type: object
+     *            required:
+     *              - email
+     *              - newPassword
+     *            properties:
+     *              email:
+     *                type: string
+     *                default: ''
+     *              newPassword:
+     *                type: string
+
+     *     responses:
+     *      201:
+     *        description: Password updated successfully
+     *      404:
+     *        description: Password reset failed"
+     */
 router.route("/reset").put(user.resetPassword)
+
+
+
+/** PUT Methods */
+    /**
+     * @openapi
+     * '/api/v1/user/change-password':
+     *  put:
+     *     tags:
+     *     - User Controller
+     *     summary: change user password to a new password
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *            type: object
+     *            required:
+     *              - password
+     *              - confirmPassword
+     *            properties:
+     *              password:
+     *                type: string
+     *                default: ''
+     *              confirmPassword:
+     *                type: string
+
+     *     responses:
+     *      201:
+     *        description: User password updated successfully
+     *      404:
+     *        description: Password update failed"
+     */
 router.route("/change-password").put(loginJWTAuth, user.changePassword)
 
 //export module
