@@ -34,13 +34,25 @@ const taskValidationSchema = Joi.object({
     .messages({
       "string.base": "Description must be a string",
     }),
-  
-  fileUrl: Joi.string()
-    .uri()
-    .allow(null)
+     
+  servName: Joi.string()
+  .allow(null, "")
+  .messages({
+    "string.base": "Description must be a string",
+  }),
+   
+  email: Joi.string()
+    .allow(null, "")
     .messages({
-      "string.uri": "File URL must be a valid URI",
-    }),
+      "string.base": "Description must be a string",
+    })
+  
+  // fileUrl: Joi.string()
+  //   .uri()
+  //   .allow(null)
+  //   .messages({
+  //     "string.uri": "File URL must be a valid URI",
+  //   }),
   
 });
 
