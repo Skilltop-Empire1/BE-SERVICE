@@ -35,6 +35,10 @@ const sequelize = new Sequelize(
   }
 );
 
+if (!CONFIG.DB_NAME || !CONFIG.DB_USERNAME || !CONFIG.DB_PASSWORD || !CONFIG.DB_HOST) {
+  throw new Error("Database configuration is incomplete. Please verify your environment variables.");
+}
+
 const initializeDatabase = async () => {
   try {
     await sequelize.authenticate();

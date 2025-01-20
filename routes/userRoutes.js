@@ -73,7 +73,7 @@ router.route("/signup").post(user.signup)
 /** POST Methods */
     /**
      * @openapi
-     * '/api/v1/user/signin:
+     * '/api/v1/user/signin':
      *  post:
      *     tags:
      *     - User Controller
