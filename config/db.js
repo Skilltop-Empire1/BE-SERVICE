@@ -1,9 +1,5 @@
-
 const { Sequelize } = require("sequelize");
-require("dotenv").config(); 
-
-
-
+require("dotenv").config();
 
 const CONFIG = {
   DB_NAME: process.env.DB_NAME,
@@ -11,9 +7,9 @@ const CONFIG = {
   DB_PASSWORD: process.env.DB_PASSWORD,
   DB_DIALECT: process.env.DB_DIALECT || "postgres",
   DB_HOST: process.env.DB_HOST || "localhost",
-  DB_PORT: parseInt(process.env.DB_PORT, 10) || 5432, 
+  DB_PORT: parseInt(process.env.DB_PORT, 10) || 5432,
+  DB_USE_SSL: process.env.DB_USE_SSL === "true", 
 };
-
 
 const sequelize = new Sequelize(
   CONFIG.DB_NAME,
@@ -50,6 +46,5 @@ const initializeDatabase = async () => {
 
 // Initialize the database
 initializeDatabase();
-
 
 module.exports = sequelize;

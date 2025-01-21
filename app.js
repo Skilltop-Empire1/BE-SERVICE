@@ -47,15 +47,15 @@ const messageRoute = require("./routes/messageRoutes")
 
 
 
-app.use("/api/v1/user", userRoute);
-app.use("/api/v1/employee", employeeRoute);
-app.use("/api/v1/service", serviceRoute);
-app.use("/api/v1/TASK", taskRoute);
-app.use("/api/v1/client", clientRoute);
-app.use("/api/v1/report", reportRoute);
-app.use("/api/v1/finance", financeRoute);
-app.use("/api/v1/inventory", inventoryRoute);
-app.use("/api/v1/message", messageRoute);
+app.use("/user", userRoute);
+app.use("/employee", employeeRoute);
+app.use("/service", serviceRoute);
+app.use("/TASK", taskRoute);
+app.use("/client", clientRoute);
+app.use("/report", reportRoute);
+app.use("/finance", financeRoute);
+app.use("/inventory", inventoryRoute);
+app.use("/message", messageRoute);
 
 
 
@@ -67,9 +67,6 @@ cron.schedule('*/30 * * * *', async ()=> {
     console.error("failed to update tasks", error.message)
   }
 })
-
-
-
 
 
 app.set("io",io)
@@ -86,5 +83,3 @@ const startServer = async () => {
   
   
   startServer();
-
-
