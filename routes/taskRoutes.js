@@ -42,10 +42,24 @@ const upload = require("../middlewares/multer")
  *             - title
  *             - description
  *           properties:
- *             title:
- *               type: string
- *             description:
- *               type: string
+ *             taskTitle:
+ *                 type: string
+ *               servName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               priority:
+ *                 type: string
+ *               dueDate:
+ *                 type: string
+ *                 format: date
+ *               taskStatus:
+ *                 type: string
+ *               desc:
+ *                 type: string
+ *               fileUrl:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Task created successfully

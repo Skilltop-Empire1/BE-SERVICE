@@ -23,44 +23,59 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
 
  /**
  * @swagger
- * /employees/create:
- *   post:
- *     summary: Create a new employee
- *     description: Adds a new employee with a profile picture
- *     tags: [Employees]
- *     security:
- *       - BearerAuth: []
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: profile
- *         type: file
- *         description: Employee profile image
- *       - in: body
- *         name: body
- *         description: Employee details
- *         required: true
- *         schema:
- *           type: object
- *           required: 
- *             - name
- *             - email
- *             - position
- *           properties:
- *             name:
- *               type: string
- *             email:
- *               type: string
- *             position:
- *               type: string
- *     responses:
- *       201:
- *         description: Employee created successfully
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
+/employee/create:
+    post:
+      summary: Create a new employee
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile:
+                  type: string
+                  format: binary
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                role:
+                  type: string
+                dept:
+                  type: string
+                type:
+                  type: string
+                status:
+                  type: string
+                task:
+                  type: string
+                note:
+                  type: string
+                phoneNo:
+                  type: string
+      responses:
+        '201':
+          description: Employee created successfully
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+      example:
+        firstName: "John"
+        lastName: "Doe"
+        email: "johndoe@example.com"
+        role: "Manager"
+        dept: "HR"
+        type: "Full-time"
+        status: "Active"
+        task: "Onboarding"
+        note: "Urgent hire"
+        phoneNo: "1234567890"
  */
  router.post("/create", upload.single("profile"), authMiddleware.loginJWTAuth, employeeController.addEmployee);
 
