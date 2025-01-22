@@ -12,8 +12,8 @@ const options = {
     },
     servers: [
       {
-        // url: process.env.BACKEND_URL || "http://localhost:5000", // Replace with your server URL
-        url: "http://localhost:5000", 
+         url: process.env.CLIENT_URL || "http://localhost:5000", // Replace with your server URL
+        //url: "http://localhost:5000", 
       
       },
     ],
@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 const swaggerSpec = swaggerJSDoc(options);
 
 function swaggerDocs(app, client_url) {
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   console.log(`Swagger docs available at ${client_url}/docs`);
 }
 
