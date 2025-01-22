@@ -20,7 +20,7 @@ const upload = require("../middlewares/multer")
 
 /**
  * @swagger
- * /tasks/create:
+ * /task/create:
  *   post:
  *     summary: Create a new task
  *     description: Adds a new task with an optional file attachment
@@ -70,7 +70,7 @@ router.post("/create", upload.single("fileUrl"), taskController.createTask);
 
 /**
  * @swagger
- * /tasks/list:
+ * /task/list:
  *   get:
  *     summary: Get all tasks
  *     description: Retrieve a list of all tasks
@@ -85,7 +85,7 @@ router.get("/list", taskController.getAllTask);
 
 /**
  * @swagger
- * /tasks/{id}:
+ * /task/{id}:
  *   get:
  *     summary: Get a task by ID
  *     description: Retrieve a specific task by ID
@@ -107,7 +107,7 @@ router.get("/:id", taskController.getTask);
 
 /**
  * @swagger
- * /tasks/{id}:
+ * /task/{id}:
  *   put:
  *     summary: Update a task
  *     description: Update task details and file attachment
@@ -147,7 +147,7 @@ router.put("/:id", upload.single("fileUrl"), taskController.editTask);
 
 /**
  * @swagger
- * /tasks/{id}:
+ * /task/{id}:
  *   delete:
  *     summary: Delete a task
  *     description: Deletes a task by ID

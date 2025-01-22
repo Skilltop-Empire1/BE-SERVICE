@@ -81,7 +81,7 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
 
  /**
   * @swagger
-  * /employees/list:
+  * /employee/list:
   *   get:
   *     summary: Get all employees
   *     description: Retrieve a list of all employees
@@ -98,7 +98,7 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
  
  /**
   * @swagger
-  * /employees/invite:
+  * /employee/invite:
   *   post:
   *     summary: Invite an employee
   *     description: Sends an invite to an employee
@@ -123,7 +123,7 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
  
  /**
   * @swagger
-  * /employees/search:
+  * /employee/search:
   *   get:
   *     summary: Search for employees
   *     description: Search employees by query parameters
@@ -144,7 +144,7 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
  
  /**
   * @swagger
-  * /employees/list/{id}:
+  * /employee/list/{id}:
   *   get:
   *     summary: Get an employee by ID
   *     description: Retrieve a specific employee by ID
@@ -166,7 +166,7 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
  
  /**
   * @swagger
-  * /employees/edit/{id}:
+  * /employee/edit/{id}:
   *   put:
   *     summary: Update an employee
   *     description: Update employee details and profile image
@@ -206,7 +206,7 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
  
  /**
   * @swagger
-  * /employees/remove/{id}:
+  * /employee/remove/{id}:
   *   delete:
   *     summary: Remove an employee
   *     description: Deletes an employee by ID
