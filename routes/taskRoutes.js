@@ -13,58 +13,76 @@ const upload = require("../middlewares/multer")
 
 /**
  * @swagger
- * tags:
- *   name: Tasks
- *   description: API endpoints for managing tasks
- */
-
-/**
- * @swagger
  * /task/create:
  *   post:
  *     summary: Create a new task
  *     description: Adds a new task with an optional file attachment
- *     tags: [Tasks]
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: fileUrl
- *         type: file
- *         description: Task-related file
- *       - in: body
- *         name: body
- *         description: Task details
- *         required: true
- *         schema:
- *           type: object
- *           required: 
- *             - title
- *             - description
- *           properties:
- *             taskTitle:
- *                 type: string
- *               servName:
- *                 type: string
- *               email:
- *                 type: string
- *               priority:
- *                 type: string
- *               dueDate:
- *                 type: string
- *                 format: date
- *               taskStatus:
- *                 type: string
- *               desc:
- *                 type: string
+ *     tags: 
+ *       - Tasks
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - taskTitle
+ *               - servName
+ *               - email
+ *               - priority
+ *               - dueDate
+ *               - taskStatus
+ *               - desc
+ *             properties:
  *               fileUrl:
  *                 type: string
  *                 format: binary
+ *                 description: Task-related file
+ *               taskTitle:
+ *                 type: string
+ *                 description: Title of the task
+ *               servName:
+ *                 type: string
+ *                 description: Service name related to the task
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Contact email
+ *               priority:
+ *                 type: string
+ *                 description: Priority level of the task
+ *               dueDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Due date for the task
+ *               taskStatus:
+ *                 type: string
+ *                 description: Current status of the task
+ *               desc:
+ *                 type: string
+ *                 description: Detailed description of the task
  *     responses:
- *       201:
+ *       '201':
  *         description: Task created successfully
- *       400:
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Task created successfully"
+ *               taskId: "12345"
+ *       '400':
  *         description: Bad request
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Invalid input data"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal server error"
  */
 router.post("/create", upload.single("fileUrl"), taskController.createTask);
 
