@@ -17,65 +17,89 @@ const authMiddleware = require("../middlewares/authenticationMiddleware")
 /**
  * @swagger
  * tags:
- *   name: Employees
- *   description: API endpoints for managing employees
- */
-
- /**
- * @swagger
-/employee/create:
-    post:
-      summary: Create a new employee
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                profile:
-                  type: string
-                  format: binary
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                role:
-                  type: string
-                dept:
-                  type: string
-                type:
-                  type: string
-                status:
-                  type: string
-                task:
-                  type: string
-                note:
-                  type: string
-                phoneNo:
-                  type: string
-      responses:
-        '201':
-          description: Employee created successfully
-        '400':
-          description: Validation error
-        '500':
-          description: Internal server error
-      example:
-        firstName: "John"
-        lastName: "Doe"
-        email: "johndoe@example.com"
-        role: "Manager"
-        dept: "HR"
-        type: "Full-time"
-        status: "Active"
-        task: "Onboarding"
-        note: "Urgent hire"
-        phoneNo: "1234567890"
+ *   - name: Employees
+ *     description: API endpoints for managing employees
+ *
+ * /employee/create:
+ *   post:
+ *     summary: Create a new employee
+ *     tags: 
+ *       - Employees
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - profile
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - role
+ *               - dept
+ *               - type
+ *               - status
+ *               - task
+ *               - phoneNo
+ *             properties:
+ *               profile:
+ *                 type: string
+ *                 format: binary
+ *                 description: Profile picture of the employee
+ *               firstName:
+ *                 type: string
+ *                 description: Employee's first name
+ *               lastName:
+ *                 type: string
+ *                 description: Employee's last name
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Employee's email address
+ *               role:
+ *                 type: string
+ *                 description: Employee's role in the organization
+ *               dept:
+ *                 type: string
+ *                 description: Department the employee belongs to
+ *               type:
+ *                 type: string
+ *                 description: Employment type (Full-time/Part-time)
+ *               status:
+ *                 type: string
+ *                 description: Employment status (Active/Inactive)
+ *               task:
+ *                 type: string
+ *                 description: Assigned task
+ *               note:
+ *                 type: string
+ *                 description: Additional notes about the employee
+ *               phoneNo:
+ *                 type: string
+ *                 description: Employee's contact number
+ *     responses:
+ *       '201':
+ *         description: Employee created successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Employee created successfully"
+ *               employeeId: "12345"
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Invalid request data"
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Internal server error"
  */
  router.post("/create", upload.single("profile"), authMiddleware.loginJWTAuth, employeeController.addEmployee);
 
