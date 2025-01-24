@@ -4,8 +4,10 @@ const Joi = require("joi");
 // validation functions
 const userValidation = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
-  username: Joi.string().required(),
+  password: Joi.string().min(8)
+  .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/)
+  .required(),
+  username: Joi.string().min(6).required(),
 });
 
 const loginValidation = Joi.object({
