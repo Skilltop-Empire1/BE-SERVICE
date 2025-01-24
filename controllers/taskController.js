@@ -4,16 +4,18 @@ const taskValiadtion = require("../validations/taskValidation")
 
 
 const createTask = async function (req,res) {
-    const {title,servName,email,priority,dueDate,taskStatus,desc} = req.body
+    const {taskTitle,servName,email,priority,dueDate,taskStatus,desc} = req.body
     const {error} = taskValiadtion.validate(req.body)
     if(error){
         return res.status(404).json(error.details[0].message)
     }
     const serviName = await Service.findOne({where:{serviceName:servName}})
-    if(!serviName){
+    console.log("SER",serviName)
+    if(!serviName){   
         res.status(404).json({msg:"Service name not found"})
     }
     const assigned = await User.findOne({where:{email}})
+    console.log("assign",assigned)
     if(!assigned){
         res.status(404).json({msg:"AssignTo not found"})
     }
@@ -28,9 +30,9 @@ try {
         fileUrl = result.url
     }    
     const task = await Task.create({
-            taskTitle:title,
-            service:serviName.serviceId,
-            assignTo:assigned.userId,
+            taskTitle:taskTitle,
+            serviceId:serviName.serviceId,
+            userId:assigned.userId,
             priority,
             dueDate,
             taskStatus,
@@ -56,7 +58,7 @@ const getAllTask = async function (req,res){
 const getTask = async function (req,res){
     try {
         const {id} =  req.params
-        const task = await Task.findByPK(id)
+        const task = await Task.findByPk(id)
         if(!task) return res.status(404).json({msg:"task not found"})
         res.status(200).json(task)
     } catch (error) {

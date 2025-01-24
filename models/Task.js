@@ -30,11 +30,11 @@ module.exports = (sequelize, DataTypes) => {
     Task.associate = (models) => {
       Task.belongsTo(models.Service,{
         foreignKey:"serviceId",
-        as:"service"
+        //as:"service"
       });
       Task.belongsTo(models.User, {
         foreignKey: "userId",
-        as: "assignTo",
+        //as: "assignTo",
       });
     };
   
