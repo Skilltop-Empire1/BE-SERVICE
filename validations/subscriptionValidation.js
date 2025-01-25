@@ -1,3 +1,6 @@
+// Import required modules
+const Joi = require("joi");
+
 // validation functions
 const subscriptionValidation = Joi.object({
   businessName: Joi.string().min(6).required(),

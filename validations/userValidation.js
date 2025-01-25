@@ -8,6 +8,7 @@ const userValidation = Joi.object({
   .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/)
   .required(),
   username: Joi.string().min(6).required(),
+  subscriptionCode: Joi.string().required(),
 });
 
 const loginValidation = Joi.object({
@@ -22,11 +23,15 @@ const forgotPasswordValidation = Joi.object({
 
 const newPasswordValidation = Joi.object({
   email: Joi.string().email().required(),
-  newPassword: Joi.string().required()
+  newPassword: Joi.string().min(8)
+  .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/)
+  .required()
 })
 
 const changePasswordValidation = Joi.object({
-  password: Joi.string().required(),
+  password: Joi.string().min(8)
+  .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/)
+  .required(),
   confirmPassword: Joi.string().required()
 })
 

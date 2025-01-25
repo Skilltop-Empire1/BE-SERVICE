@@ -1,5 +1,5 @@
 // Import modules
-const { User, Organization } = require("../models");
+const { User, Organization, Plan } = require("../models");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
@@ -23,7 +23,7 @@ class UserClass {
 
   // ****************************************************************************************
   signup = async (req, res) => {
-    const { email, password, username } = req.body;
+    const { email, password, username, subscriptionCode } = req.body;
 
     const authorizedUser = true;
     if (!authorizedUser) {
@@ -41,6 +41,7 @@ class UserClass {
     const orgExist = await Organization.findOne({
       where: { name: username },
     });
+
     // checking for existing users
     const userExist = await User.findOne({
       where: { email: email },
@@ -53,6 +54,14 @@ class UserClass {
       }
     } catch (error) {
       throw error;
+    }
+
+    //checking if the subscription code exist
+    const codeExist = await Plan.findOne({
+      where: {subscriptionCode: subscriptionCode}
+    })
+    if(!codeExist){
+      return res.status(404).json({msg: "Invalid subscription code"})
     }
 
     // creating organization name
@@ -162,7 +171,7 @@ class UserClass {
           address: process.env.EMAIL_USER,
         },
         to: user.email,
-        subject: "IMS Reset link",
+        subject: "Service Password Reset link",
         text: `You have made a request to change a password. Kindly Click on the link to proceed with the password reset`,
         html: ` <div style="font-family: Arial, sans-serif; color: #333;">
         <h2>Password Reset Request</h2>
@@ -224,6 +233,7 @@ class UserClass {
         return res.status(404).json(error.details[0].message);
       }
       const {email} = req.user
+      
       const user = User.findOne({where: {email}})
       if(!user){
         res.status(404).json({msg: "User does not exist"})
@@ -231,6 +241,7 @@ class UserClass {
       if (password !== confirmPassword) {
         return res.status(400).json({ msg: "Password mismatch" });
         }
+
       //update password
       const hash = await bcrypt.hash(password, 10);
       const updatepassword = await User.update(
@@ -259,72 +270,6 @@ module.exports = usersClass;
 
 
 
-
-
-
-// //************** Import libraries ************ *
-// const{ Plan} = require("../models");
-// const { Op } = require("sequelize");
-// const{planValidation} = require("../validations/userValidation")
-
-// // controller class
-// class UserObject {
-
-//   // subscribe to a plann
-//   plan = async (req, res) => {
-//     const { businessName, email, phone, subscribedPlan } = req.body;
-//     try {
-//       // validate the plan body
-//       const { error } = planValidation.validate(req.body);
-//     if (error) {
-//       return res.status(404).json(error.details[0].message);
-//     }
-//     // check if the user is  already subscribed
-//     const subscribedUser = await Plan.findOne({ 
-//       where: { 
-//         [Op.or]: [{ email }, { phone }, {businessName}],
-//       } 
-//     });
-//     if (subscribedUser) {
-//       return res.status(200).json({msg:`The Business name, email or phone number is already subscribed to ${subscribedUser.subscribedPlan} plan.`});
-//     }
-//     const subscribe = await Plan.create({
-//       businessName,
-//       email,
-//       phone,
-//       subscribedPlan
-//   });
-
-//   if(subscribe){
-//     return res.status(201).json({msg: `Subscription to ${subscribe.subscribedPlan} plan successful` })
-//   }      
-//     } catch (error) {
-//       throw error
-//     }
-//   };
-
-//   //query subscribed list
-//   planList = async (req,res)=>{
-//     const planList = await Plan.findAll()
-//     try {
-//       if(planList){
-//         return res.status(200).json(planList)
-//       }
-      
-//     } catch (error) {
-//       throw error
-//     }
-
-//   }
-
-  
-// }
-
-// //********** instance of the UserObject ********** */
-// const userObject = new UserObject();
-
-// //************Export the instant */
-// module.exports = userObject;
 
 
 

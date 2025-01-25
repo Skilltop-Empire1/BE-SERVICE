@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require("../config/db");
-
+const sequelize = require("../config/db")
 
 
   const Organization =  require('./Organization')(sequelize, DataTypes)
@@ -12,7 +11,8 @@ const sequelize = require("../config/db");
   const Report = require('./Report')(sequelize, DataTypes)
   const Finance = require('./Finance')(sequelize, DataTypes)
   const Message = require('./Message')(sequelize, DataTypes)
-  const Subscription = require('./Subscription')(sequelize, DataTypes)
+  const Plan = require('./Plan')(sequelize, DataTypes)
+  
 
   const db = {
     Organization,
@@ -24,7 +24,8 @@ const sequelize = require("../config/db");
     Report,
     Finance,
     Message,
-    Subscription
+    Plan
+
   }
 
 Object.keys(db).forEach((modelName) => {
