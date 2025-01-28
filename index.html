@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>send notification</h1>
+    <input type="text" id="postCreatedBy" placeholder="post creatred by">
+    <input type="text" id="postTitle" placeholder="post created by">
+    <button id="sendButton">send notification</button>
+    <script src="./app.js"></script>
+    <script>
+        const socket = io()
+        document.getElementById('sendButton').addEventListener('click',() =>{
+            const postCreatedBy = document.getElementById('postCreatedBy').value
+            const postTitle = document.getElementById('postTitle').value
+        })
+    </script>
+</body>
+</html>
