@@ -45,7 +45,6 @@ const reportRoute = require("./routes/reportRoutes");
 const financeRoute = require("./routes/financeRoutes");
 const inventoryRoute = require("./routes/inventoryRoutes");
 const messageRoute = require("./routes/messageRoutes")
-const chatRoute = require("./routes/chatRoutes")
 
 
 
@@ -58,7 +57,6 @@ app.use("/report", reportRoute);
 app.use("/finance", financeRoute);
 app.use("/inventory", inventoryRoute);
 app.use("/message", messageRoute);
-app.use("/chat", chatRoute);
 
 const client_url = process.env.CLIENT_URL || "http://localhost:5000";
 swaggerDocs(app, client_url);
