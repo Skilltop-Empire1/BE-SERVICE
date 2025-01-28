@@ -48,7 +48,16 @@ try {
 
 const getAllTask = async function (req,res){
     try {
-        const tasks = await Task.findAll()
+        const tasks = await Task.findAll({
+            include:[{
+                model:Service,
+                attributes:['serviceId','serviceName']
+            },{
+                model:User,
+                attributes:['userId','firstName','lastName','phoneNo']
+            }
+        ],
+        })
         res.status(200).json(tasks)
     } catch (error) {
         res.status(500).json(error.message)
@@ -58,7 +67,16 @@ const getAllTask = async function (req,res){
 const getTask = async function (req,res){
     try {
         const {id} =  req.params
-        const task = await Task.findByPk(id)
+        const task = await Task.findByPk(id,{
+            include:[{
+                model:Service,
+                attributes:['serviceId','serviceName']
+            },{
+                model:User,
+                attributes:['userId','firstName','lastName','phoneNo']
+            }
+        ],
+        })
         if(!task) return res.status(404).json({msg:"task not found"})
         res.status(200).json(task)
     } catch (error) {

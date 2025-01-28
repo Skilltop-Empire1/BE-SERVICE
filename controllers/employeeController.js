@@ -71,7 +71,7 @@ exports.inviteEmployee = async(req,res) =>{
     try {
         console.log("pass")
         const userExist = await User.findOne({where:{email}})
-        if(!userExist) return res.status(404).json({msg:"Email already exists"})
+        if(!userExist) return res.status(404).json({msg:"Email already does not exists"})
         console.log("user",userExist)
         const generatedPassword = genePass()
         console.log("pass",generatedPassword)
