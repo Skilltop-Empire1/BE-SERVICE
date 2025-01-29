@@ -7,8 +7,8 @@ const userValidation = Joi.object({
   password: Joi.string().min(8)
   .pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/)
   .required(),
-  username: Joi.string().min(6).required(),
-  subscriptionCode: Joi.string().required(),
+  username: Joi.string().min(6).required()
+  //subscriptionCode: Joi.string().required(),
 });
 
 const loginValidation = Joi.object({
