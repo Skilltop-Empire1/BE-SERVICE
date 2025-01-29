@@ -23,7 +23,7 @@ class UserClass {
 
   // ****************************************************************************************
   signup = async (req, res) => {
-    const { email, password, username, subscriptionCode } = req.body;
+    const { email, password, username, /*subscriptionCode*/ } = req.body;
 
     const authorizedUser = true;
     if (!authorizedUser) {
@@ -57,12 +57,12 @@ class UserClass {
     }
 
     //checking if the subscription code exist
-    const codeExist = await Plan.findOne({
-      where: {subscriptionCode: subscriptionCode}
-    })
-    if(!codeExist){
-      return res.status(404).json({msg: "Invalid subscription code"})
-    }
+    // const codeExist = await Plan.findOne({
+    //   where: {subscriptionCode: subscriptionCode}
+    // })
+    // if(!codeExist){
+    //   return res.status(404).json({msg: "Invalid subscription code"})
+    // }
 
     // creating organization name
     const createOrg = await Organization.create({ name: username });
