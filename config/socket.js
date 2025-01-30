@@ -353,7 +353,6 @@ const initializeSocket = (server) => {
     socket.on("stopTyping", async ({ chatId, userId }) => {
       const chat = await Chat.findByPk(chatId);
       if (!chat) return;
-    
       chat.members.forEach((memberId) => {
         if (memberId !== userId) {
           const recipient = onlineUsers.find((user) => user.userId === memberId);
