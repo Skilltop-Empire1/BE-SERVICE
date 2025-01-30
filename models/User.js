@@ -110,6 +110,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "Super Admin",
       },
+      isFirstLogin: {  // Added isFirstLogin field
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+    },
     
     });
   
@@ -121,7 +125,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.hasMany(models.Service);
       User.hasMany(models.Task);
-      User.hasMany(models.Task);
+      // User.hasMany(models.Task);
       User.hasMany(models.Report);
       User.hasOne(models.Finance);
       User.hasMany(models.Message);
