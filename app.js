@@ -44,6 +44,7 @@ const clientRoute = require("./routes/clientRoutes");
 const reportRoute = require("./routes/reportRoutes");
 const financeRoute = require("./routes/financeRoutes");
 const inventoryRoute = require("./routes/inventoryRoutes");
+const chatRoute = require("./routes/chatRoutes")
 const messageRoute = require("./routes/messageRoutes")
 const paymentRoute = require("./routes/paymentRoutes")
 
@@ -56,6 +57,7 @@ app.use("/client", clientRoute);
 app.use("/report", reportRoute);
 app.use("/finance", financeRoute);
 app.use("/inventory", inventoryRoute);
+app.use("/chat", chatRoute);
 app.use("/message", messageRoute);
 app.use("/payment", paymentRoute)
 
