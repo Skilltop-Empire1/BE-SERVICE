@@ -12,6 +12,8 @@ const sequelize = require("../config/db")
   const Finance = require('./Finance')(sequelize, DataTypes)
   const Message = require('./Message')(sequelize, DataTypes)
   const Chat = require('./Chat')(sequelize, DataTypes)
+  const Payment = require('./Payment')(sequelize, DataTypes)
+  const Code = require('./Code')(sequelize, DataTypes)
 
   const db = {
     Organization,
@@ -23,7 +25,9 @@ const sequelize = require("../config/db")
     Report,
     Finance,
     Message,
-    Chat
+    Chat,
+    Payment,
+    Code
   }
 
 Object.keys(db).forEach((modelName) => {
