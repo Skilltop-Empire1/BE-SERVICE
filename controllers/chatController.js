@@ -1,33 +1,8 @@
-// const { User,Message,Chat } = require("../models")
-// const {Op} = require('sequelize')
-// // exports.createChat = async(req,res) => {
-// //     const {firstId, secondId} = req.body
-// //     try {
-// //         const chat = await Chat.findOne({
-// //             // where:{
-// //             //     senderId:firstId,
-// //             //     recipientId:secondId
-// //             // }
-// //             members:{$all:{firstId,secondId}}
-// //         })
-// //         if (chat) return res.status(200).json({"chat exists":chat})
-// //         const newChat = await Chat.create({
-// //             memebers:[firstId,secondId]
-// //     })
-// // //     const newChat = await Message.create({
-// // //         senderId:firstId,
-// // //         recipientId:secondId
-// // // })
-// //     const response = newChat.save()
-// //     res.status(200).json({"new chat created":response})
-// //     } catch (error) {
-// //         console.log(error)
-// //         res.status(500).json(error)
-// //     }
-// // }
 
 
 const { Chat, Message, User } = require("../models");
+const {Op} = require('sequelize')
+
 exports.createChat = async (req, res) => {
     const { firstId, secondId } = req.body;
   
