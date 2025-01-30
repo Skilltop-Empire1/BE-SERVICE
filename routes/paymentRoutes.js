@@ -1,3 +1,8 @@
+const express = require("express");
+const router = express.Router();
+const paymentController = require('../controllers/paymentController');
+// const loginJWTAthentication = require("../middlewares/authMiddleware");
+// const authorize = require("../middlewares/rolePermission");
 /**
  * @swagger
  * components:
@@ -49,7 +54,7 @@
 
 /**
  * @swagger
- * /api/payments/code/send:
+ * /api/payment/code:
  *   post:
  *     summary: Manually send a payment code
  *     tags: [Payments]
@@ -94,11 +99,12 @@
  *             example:
  *               msg: "Error message describing the issue"
  */
+router.post('/code',paymentController.sendCode)
 
 
 /**
  * @swagger
- * /api/payments/code/list:
+ * /api/payment/list:
  *   get:
  *     summary: Retrieve a list of all payment codes
  *     tags: [Payments]
@@ -162,11 +168,13 @@
  *               msg: "Error retrieving payment codes"
  *               error: "Detailed error message"
  */
+router.get('/list',paymentController.allCodes)
+
 
 
 /**
  * @swagger
- * /api/payments/code/{id}:
+ * /api/payment/code/{id}:
  *   get:
  *     summary: Get a payment code by ID
  *     tags: [Payments]
@@ -193,10 +201,11 @@
  *       500:
  *         description: Server error
  */
+router.get('/code/:id',paymentController.getCodeById)
 
 /**
  * @swagger
- * /api/payments/code/{id}:
+ * /api/payment/code/{id}:
  *   put:
  *     summary: Update a payment code by ID
  *     tags: [Payments]
@@ -292,6 +301,7 @@
  *               msg: "Error updating code"
  *               error: "Detailed error message"
  */
+router.put('/code/:id',paymentController.updateCode)
 
 /**
  * @swagger
@@ -318,19 +328,16 @@
  *       500:
  *         description: Server error
  */
-
-
-const express = require("express");
-const router = express.Router();
-const paymentController = require('../controllers/paymentController');
-// const loginJWTAthentication = require("../middlewares/authMiddleware");
-// const authorize = require("../middlewares/rolePermission");
-
-router.post('/code',paymentController.sendCode)
-router.get('/list',paymentController.allCodes)
-router.get('/code/:id',paymentController.getCodeById)
-router.put('/code/:id',paymentController.updateCode)
 router.delete('/delete/:id',paymentController.deleteCode)
+
+
+
+
+// router.post('/code',paymentController.sendCode)
+// router.get('/list',paymentController.allCodes)
+// router.get('/code/:id',paymentController.getCodeById)
+// router.put('/code/:id',paymentController.updateCode)
+// router.delete('/delete/:id',paymentController.deleteCode)
 
 
 module.exports = router;

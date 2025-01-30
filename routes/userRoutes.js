@@ -60,7 +60,7 @@ router.route("/all-users").get(loginJWTAuth, user.welcome)
      *              password:
      *                type: string
      *                default: johnDoe20!@
-     *              subscriptionCode:
+     *              subCode:
      *                type: string
      *                default: johnDoe20!@
      *     responses:
