@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         message: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM("Unread", "Read"),
