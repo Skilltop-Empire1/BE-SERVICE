@@ -1,12 +1,12 @@
 // Import modules
-const { User, Organization, Plan } = require("../models");
+const { User, Organization,  Code, Payment} = require("../models");
 const bcrypt = require("bcryptjs");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../validations/userValidation");
 const nodemailer = require("nodemailer");
 const randomText = require("../middlewares/randomText");
-const { where } = require("sequelize");
+const { where, Op } = require("sequelize");
 require("dotenv").config();
 
 // **************************************************************************************
@@ -23,7 +23,7 @@ class UserClass {
 
   // ****************************************************************************************
   signup = async (req, res) => {
-    const { email, password, username, /*subscriptionCode*/ } = req.body;
+    const { email, password, username, subCode } = req.body;
 
     const authorizedUser = true;
     if (!authorizedUser) {
@@ -57,12 +57,12 @@ class UserClass {
     }
 
     //checking if the subscription code exist
-    // const codeExist = await Plan.findOne({
-    //   where: {subscriptionCode: subscriptionCode}
-    // })
-    // if(!codeExist){
-    //   return res.status(404).json({msg: "Invalid subscription code"})
-    // }
+    const codeExist = await Code.findOne({
+      where: {code:subCode}
+    })
+    if(!codeExist){
+      return res.status(404).json({msg: "Invalid subscription code"})
+    }
 
     // creating organization name
     const createOrg = await Organization.create({ name: username });

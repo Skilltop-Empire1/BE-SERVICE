@@ -14,6 +14,8 @@ const sequelize = require("../config/db")
   const Notification = require('./Notification')(sequelize, DataTypes); // James newly added notification
 
   const Chat = require('./Chat')(sequelize, DataTypes)
+  const Payment = require('./Payment')(sequelize, DataTypes)
+  const Code = require('./Code')(sequelize, DataTypes)
 
   const db = {
     Organization,
@@ -27,6 +29,9 @@ const sequelize = require("../config/db")
     Message,
     Notification,
 
+    Chat,
+    Payment,
+    Code
   }
 
 Object.keys(db).forEach((modelName) => {
