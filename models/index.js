@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require("../config/db")
 
 
-
   const Organization =  require('./Organization')(sequelize, DataTypes)
   const User = require('./User')(sequelize, DataTypes)
   const Service = require('./Service')(sequelize, DataTypes)
@@ -14,6 +13,7 @@ const sequelize = require("../config/db")
   const Message = require('./Message')(sequelize, DataTypes)
   const Notification = require('./Notification')(sequelize, DataTypes); // James newly added notification
 
+  const Chat = require('./Chat')(sequelize, DataTypes)
 
   const db = {
     Organization,

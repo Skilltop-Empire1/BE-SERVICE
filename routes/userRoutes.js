@@ -12,7 +12,7 @@ const router = express.Router()
  /** GET Methods */
     /**
      * @openapi
-     * '/api/v1/user/all-users':
+     * '/user/all-users':
      *  get:
      *     tags:
      *     - User Controller
@@ -34,7 +34,7 @@ router.route("/all-users").get(loginJWTAuth, user.welcome)
  /** POST Methods */
     /**
      * @openapi
-     * '/api/v1/user/signup':
+     * '/user/signup':
      *  post:
      *     tags:
      *     - User Controller
@@ -49,6 +49,7 @@ router.route("/all-users").get(loginJWTAuth, user.welcome)
      *              - username
      *              - email
      *              - password
+     *              - subscriptionCode
      *            properties:
      *              username:
      *                type: string
@@ -57,6 +58,9 @@ router.route("/all-users").get(loginJWTAuth, user.welcome)
      *                type: string
      *                default: johndoe@mail.com
      *              password:
+     *                type: string
+     *                default: johnDoe20!@
+     *              subscriptionCode:
      *                type: string
      *                default: johnDoe20!@
      *     responses:
@@ -73,7 +77,7 @@ router.route("/signup").post(user.signup)
 /** POST Methods */
     /**
      * @openapi
-     * '/api/v1/user/signin:
+     * '/user/signin':
      *  post:
      *     tags:
      *     - User Controller
@@ -109,7 +113,7 @@ router.route("/signin").post(user.signin)
 /** POST Methods */
     /**
      * @openapi
-     * '/api/v1/user/password-reset':
+     * '/user/password-reset':
      *  post:
      *     tags:
      *     - User Controller
@@ -138,7 +142,7 @@ router.route("/password-reset").post(user.forgotPassword)
 /** PUT Methods */
     /**
      * @openapi
-     * '/api/v1/user/reset':
+     * '/user/reset':
      *  put:
      *     tags:
      *     - User Controller
@@ -172,7 +176,7 @@ router.route("/reset").put(user.resetPassword)
 /** PUT Methods */
     /**
      * @openapi
-     * '/api/v1/user/change-password':
+     * '/user/change-password':
      *  put:
      *     tags:
      *     - User Controller
