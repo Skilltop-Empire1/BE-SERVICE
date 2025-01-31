@@ -47,6 +47,10 @@ try {
 }
 
 const getAllTask = async function (req,res){
+    const {userId} = req.user
+    const user = await User.findByPk(userId)
+    if(!user) return res.status(404).json({msg:"user not found"})
+    const orgId = user.orgId
     try {
         const tasks = await Task.findAll({
             include:[{
@@ -54,10 +58,11 @@ const getAllTask = async function (req,res){
                 attributes:['serviceId','serviceName']
             },{
                 model:User,
-                attributes:['userId','firstName','lastName','phoneNo']
+                attributes:['userId','firstName','lastName','phoneNo'],
+                where:{orgId}
             }
         ],
-        })
+        },)
         res.status(200).json(tasks)
     } catch (error) {
         res.status(500).json(error.message)
