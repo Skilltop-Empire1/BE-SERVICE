@@ -42,7 +42,8 @@ exports.addEmployee = async (req,res) => {
         profileUrl = result.url
         fs.unlinkSync(req.file.path)
        } 
-
+       const emailExist = await User.findOne({email})
+       if(emailExist) return res.status(404).json({message:`A user with this email:${email} already exist`})
        const createEmployee = await User.create({
         firstName,
         lastName,
