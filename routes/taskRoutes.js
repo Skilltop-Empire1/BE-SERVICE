@@ -1,7 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const taskController = require("../controllers/taskController")
-const upload = require("../middlewares/multer")
+const upload = require("../middlewares/multer");
+const { loginJWTAuth } = require("../middlewares/authenticationMiddleware");
 
 // router.post("/create",upload.single("fileUrl"),taskController.createTask)
 // router.get("/list",taskController.getAllTask)
@@ -99,7 +100,7 @@ router.post("/create", upload.single("fileUrl"), taskController.createTask);
  *       500:
  *         description: Server error
  */
-router.get("/list", taskController.getAllTask);
+router.get("/list",loginJWTAuth, taskController.getAllTask);
 
 /**
  * @swagger
