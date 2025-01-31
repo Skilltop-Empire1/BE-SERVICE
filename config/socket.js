@@ -127,7 +127,6 @@ const initializeSocket = (server) => {
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
-
     // Handle user registration (saving socketId)
     socket.on("register", (userId) => {
       if (!onlineUsers.some((user) => user.userId === userId)) {
@@ -135,36 +134,20 @@ const initializeSocket = (server) => {
       }
       io.emit("getOnlineUsers", onlineUsers);
       console.log("User Registered:", onlineUsers);
-    });
+    })
+    
 
-    // // Send private message
-    // socket.on("sendMessage", async ({ senderId, recipientId, chatId, content }) => {
-    //   const recipient = onlineUsers.find((user) => user.userId === recipientId);
-
-    //   // Save message to DB
-    //   const message = await Message.create({ senderId, chatId, content });
-
-    //   if (recipient) {
-    //     io.to(recipient.socketId).emit("getMessage", message);
-    //   }
-
-    //   io.to(socket.id).emit("messageSent", message);
-    // });
+    // Send private message
     socket.on("sendMessage", async ({ senderId, recipientId, chatId, content }) => {
       try {
         if (!senderId || !chatId || !content.trim()) {
           return;
         }
-    
         const recipient = onlineUsers.find((user) => user.userId === recipientId);
-    
-        // Save message to DB
         const message = await Message.create({ senderId, chatId, content });
-    
         if (recipient) {
           io.to(recipient.socketId).emit("getMessage", message);
         }
-    
         io.to(socket.id).emit("messageSent", message);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -172,23 +155,18 @@ const initializeSocket = (server) => {
     });
     
 
-
+    //create a group
     socket.on("createGroup", async ({ userId, groupName, members }) => {
       try {
-        // Ensure the group name and members are valid
         if (!groupName || !members || members.length === 0) return;
-    
         // Add the creator to the group
         if (!members.includes(userId)) members.push(userId);
-    
-        // Create the group in the database
         const groupChat = await Chat.create({
           isGroup: true,
           groupName,
           members,
-          admins: [userId], // Creator is an admin
+          admins: [userId], 
         });
-    
         // Notify all group members
         members.forEach((memberId) => {
           const recipient = onlineUsers.find((user) => user.userId === memberId);
@@ -204,19 +182,17 @@ const initializeSocket = (server) => {
     });
 
     
-
+    //join a group chat
     socket.on("joinChat", async ({ userId, chatId }) => {
       try {
         const chat = await Chat.findByPk(chatId);
         if (!chat) return;
-    
         // Fetch last 50 messages (modify as needed)
         const messages = await Message.findAll({
           where: { chatId },
           order: [["createdAt", "ASC"]],
           limit: 50,
         });
-    
         socket.emit("loadMessages", messages);
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -227,27 +203,10 @@ const initializeSocket = (server) => {
 
 
     // // Send message in group chat
-    // socket.on("sendGroupMessage", async ({ senderId, chatId, content }) => {
-    //   const chat = await Chat.findByPk(chatId);
-    //   if (!chat) return;
-
-    //   // Save message to DB
-    //   const message = await Message.create({ senderId, chatId, content });
-
-    //   // Notify all group members
-    //   chat.members.forEach((memberId) => {
-    //     const recipient = onlineUsers.find((user) => user.userId === memberId);
-    //     if (recipient) {
-    //       io.to(recipient.socketId).emit("getMessage", message);
-    //     }
-    //   });
-    // });
     socket.on("sendGroupMessage", async ({ senderId, chatId, content }) => {
       const chat = await Chat.findByPk(chatId);
       if (!chat || !chat.members.includes(senderId)) return; // Ensure sender is a member
-    
       const message = await Message.create({ senderId, chatId, content });
-    
       chat.members.forEach((memberId) => {
         const recipient = onlineUsers.find((user) => user.userId === memberId);
         if (recipient) {
@@ -257,15 +216,13 @@ const initializeSocket = (server) => {
     });
     
 
-
+    //update group admin
     socket.on("updateGroupAdmin", async ({ chatId, adminId, targetUserId, action }) => {
       try {
         const chat = await Chat.findByPk(chatId);
         if (!chat) return;
-        
         // Ensure only an existing admin can update roles
         if (!chat.admins.includes(adminId)) return;
-    
         if (action === "promote" && !chat.admins.includes(targetUserId)) {
           chat.admins = [...chat.admins, targetUserId]; // Properly update array
         } else if (action === "demote" && chat.admins.includes(targetUserId)) {
@@ -273,9 +230,7 @@ const initializeSocket = (server) => {
           if (chat.admins.length === 1) return; // Ensure at least one admin remains
           chat.admins = chat.admins.filter((id) => id !== targetUserId);
         }
-    
         await chat.save();
-    
         // Notify all group members about the change
         chat.members.forEach((memberId) => {
           const recipient = onlineUsers.find((user) => user.userId === memberId);
@@ -283,7 +238,6 @@ const initializeSocket = (server) => {
             io.to(recipient.socketId).emit("groupUpdated", chat);
           }
         });
-    
       } catch (error) {
         console.error("Error updating admin:", error);
       }
@@ -291,7 +245,7 @@ const initializeSocket = (server) => {
     
 
 
-
+    //leaving a group
     socket.on("leaveGroup", async ({ userId, chatId }) => {
       try {
         const chat = await Chat.findByPk(chatId);
@@ -339,7 +293,6 @@ const initializeSocket = (server) => {
     socket.on("typing", async ({ chatId, userId }) => {
       const chat = await Chat.findByPk(chatId);
       if (!chat) return;
-    
       chat.members.forEach((memberId) => {
         if (memberId !== userId) {
           const recipient = onlineUsers.find((user) => user.userId === memberId);
@@ -373,5 +326,7 @@ const initializeSocket = (server) => {
 
   return io;
 };
-
-module.exports = { initializeSocket };
+const getUserSocketMap = () => onlineUsers
+module.exports = { 
+  initializeSocket,
+getUserSocketMap };
