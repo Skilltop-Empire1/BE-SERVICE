@@ -23,7 +23,7 @@ class UserClass {
 
   // ****************************************************************************************
   signup = async (req, res) => {
-    const { email, password, username, subCode } = req.body;
+    const { email, password, username, subCode, name } = req.body;
 
     const authorizedUser = true;
     if (!authorizedUser) {
@@ -55,13 +55,14 @@ class UserClass {
     } catch (error) {
       throw error;
     }
-
+    
     //checking if the subscription code exist
-    const codeExist = await Code.findOne({
-      where: {code:subCode}
-    })
+    const codeExist = await Code.findOne({where: {code:subCode}})
     if(!codeExist){
       return res.status(404).json({msg: "Invalid subscription code"})
+    }
+    if (codeExist.email !== email || codeExist.businessName !== username ){
+      return res.status(404).json({msg: "Email or business name is not subscribed"})
     }
 
     // creating organization name
