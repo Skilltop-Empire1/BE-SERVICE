@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { createReport, getReports, getReportById, updateReport, deleteReport } = require("../controllers/ReportController");
+const {loginJWTAuth} = require("../middlewares/authenticationMiddleware")
 
 /**
  * @swagger
@@ -36,7 +37,7 @@ const { createReport, getReports, getReportById, updateReport, deleteReport } = 
  *       500:
  *         description: Error creating report
  */
-router.post("/create", createReport);
+router.post("/create",loginJWTAuth, createReport);
 
 /**
  * @swagger
@@ -51,7 +52,7 @@ router.post("/create", createReport);
  *       500:
  *         description: Error fetching reports
  */
-router.get("/get", getReports);
+router.get("/get",loginJWTAuth, getReports);
 
 /**
  * @swagger
@@ -75,7 +76,7 @@ router.get("/get", getReports);
  *       500:
  *         description: Error fetching report
  */
-router.get("/getbyid/:reportId", getReportById);
+router.get("/getbyid/:reportId",loginJWTAuth, getReportById);
 
 /**
  * @swagger
@@ -120,7 +121,7 @@ router.get("/getbyid/:reportId", getReportById);
  *       500:
  *         description: Error updating report
  */
-router.put("/update/:reportId", updateReport);
+router.put("/update/:reportId",loginJWTAuth, updateReport);
 
 /**
  * @swagger
@@ -144,6 +145,6 @@ router.put("/update/:reportId", updateReport);
  *       500:
  *         description: Error deleting report
  */
-router.delete("/delete/:reportId", deleteReport);
+router.delete("/delete/:reportId",loginJWTAuth, deleteReport);
 
 module.exports = router;

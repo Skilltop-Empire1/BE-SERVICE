@@ -14,11 +14,17 @@ const createReport = async (req, res) => {
     res.status(500).json({ error: "Error creating report", details: error.message });
   }
 };
-
-// READ: Get all reports
 const getReports = async (req, res) => {
   try {
-    const reports = await Report.findAll();
+    const reports = await Report.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "name", "email"],
+        },
+      ],
+    });
     res.status(200).json(reports);
   } catch (error) {
     res.status(500).json({ error: "Error fetching reports", details: error.message });
