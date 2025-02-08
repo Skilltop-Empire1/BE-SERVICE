@@ -262,6 +262,39 @@ class UserClass {
     }
   }// end of method
 
+  // **************************************************
+  updateUser = async (req, res) =>{
+    const { firstName, lastName, department, phoneNo } = req.body
+
+    try {
+      //validate details
+      const { error } = userValidation.updateUserValidation.validate(req.body);
+      if (error) {
+        return res.status(404).json(error.details[0].message);
+      }
+
+      const {email} = req.user
+      const user = User.findOne({where: {email}})
+      if(!user){
+        res.status(404).json({msg: "User does not exist"})
+      }
+      const updateUserDetails = await User.update(
+        { firstName, lastName, department, phoneNo }, { where: { email: email } 
+      });
+      if(updateUserDetails){
+        return res.status(201).json({mse: "User details updated sucessfully"})
+      }
+      return res.status(404).json({msg: "update not successful"})
+  
+    } catch (error) {
+      throw error
+    }
+      
+    
+
+
+  } //end of method
+
 } //class end
 // instance of class creation
 const usersClass = new UserClass();

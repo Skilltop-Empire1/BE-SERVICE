@@ -205,5 +205,45 @@ router.route("/reset").put(user.resetPassword)
      */
 router.route("/change-password").put(loginJWTAuth, user.changePassword)
 
+
+
+/** PUT Methods */
+    /**
+     * @openapi
+     * '/user/update-details':
+     *  put:
+     *     tags:
+     *     - User Controller
+     *     summary: change user password to a new password
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *            type: object
+     *            required:
+     *              - firstName
+     *              - lastName
+     *              - department
+     *              - phoneNo
+     *            properties:
+     *              firstName:
+     *                type: string
+     *                default: ''
+     *              lastName:
+     *                type: string
+     *              department:
+     *                type: string
+     *              phoneNo:
+     *                type: string
+
+     *     responses:
+     *      201:
+     *        description: User details updated successfully
+     *      404:
+     *        description: Password update failed"
+     */
+router.route("/update-details").put(loginJWTAuth, user.updateUser)
+
 //export module
 module.exports = router
