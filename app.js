@@ -46,6 +46,8 @@ const financeRoute = require("./routes/financeRoutes");
 const inventoryRoute = require("./routes/inventoryRoutes");
 const messageRoute = require("./routes/messageRoutes")
 const paymentRoute = require("./routes/paymentRoutes")
+const categoryRoute = require("./routes/categoryRoute")
+
 
 
 app.use("/user", userRoute);
@@ -57,7 +59,9 @@ app.use("/report", reportRoute);
 app.use("/finance", financeRoute);
 app.use("/inventory", inventoryRoute);
 app.use("/message", messageRoute);
-app.use("/payment", paymentRoute)
+app.use("/payment", paymentRoute);
+app.use("/category", categoryRoute)
+
 
 
 const client_url = process.env.CLIENT_URL || "http://localhost:5000";
