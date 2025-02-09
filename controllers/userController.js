@@ -7,6 +7,8 @@ const userValidation = require("../validations/userValidation");
 const nodemailer = require("nodemailer");
 const randomText = require("../middlewares/randomText");
 const { where, Op } = require("sequelize");
+const { notifyUsers } = require("../controllers/notificationsController"); // adjust the path
+
 require("dotenv").config();
 
 // **************************************************************************************
@@ -111,6 +113,22 @@ class UserClass {
         .status(400)
         .json({ msg: "You have entered incorrect login details" });
     }
+//]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+if (userIsRegistered.isFirstLogin) {
+  // Update isFirstLogin flag
+  await userIsRegistered.update({ isFirstLogin: false });
+const message = `User ${userIsRegistered.firstName || email} has logged in for the first time.`;
+// Fetch all users with role Super Admin, Admin, or Manager.
+const notifyRoles = ["Super Admin"];
+const usersToNotify = await User.findAll({
+where: { role: notifyRoles },
+attributes: ["userId"],
+});
+const recipientIds = usersToNotify.map((u) => u.userId);
+await notifyUsers(recipientIds, message, { type: "firstLogin", user: userIsRegistered });
+}
+//]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]    
+    
 
     // Create signin token
     const accessToken = jwt.sign(
