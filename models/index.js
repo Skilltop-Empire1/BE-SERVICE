@@ -12,6 +12,8 @@ const sequelize = require("../config/db")
   const Finance = require('./Finance')(sequelize, DataTypes)
   const Message = require('./Message')(sequelize, DataTypes)
   const Notification = require('./Notifications')(sequelize, DataTypes); // James newly added notification
+  const Category = require('./Category')(sequelize, DataTypes); // James newly added Category
+
 
   const Chat = require('./Chat')(sequelize, DataTypes)
   const Payment = require('./Payment')(sequelize, DataTypes)
@@ -28,6 +30,7 @@ const sequelize = require("../config/db")
     Finance,
     Message,
     Notification,
+    Category,
 
     Chat,
     Payment,

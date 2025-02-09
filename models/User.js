@@ -130,6 +130,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.Finance);
       User.hasMany(models.Message);
       User.hasOne(models.Inventory);
+      User.hasMany(models.Category, { foreignKey: "userId" });
     };
   
     return User;
