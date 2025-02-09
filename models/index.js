@@ -31,7 +31,6 @@ const sequelize = require("../config/db")
     Message,
     Notification,
     Category,
-
     Chat,
     Payment,
     Code

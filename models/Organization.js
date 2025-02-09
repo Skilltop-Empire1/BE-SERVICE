@@ -10,18 +10,18 @@ module.exports = (sequelize,DataTypes) => {
       unique: true,
       allowNull: false,
     },
-  });
+  })
 
   Organization.associate = (models) => {
     Organization.hasMany(models.User,{
       foreignKey:"orgId",
       as:"user"
     });
-    Organization.hasMany(models.Service);
-    Organization.hasMany(models.Client);
-    Organization.hasMany(models.Inventory);
-    Organization.hasMany(models.Finance);
-    Organization.hasMany(models.Report);
+    Organization.hasMany(models.Service)
+    Organization.hasMany(models.Client)
+    Organization.hasMany(models.Inventory)
+    Organization.hasMany(models.Finance)
+    Organization.hasMany(models.Report)
   };
 
   return Organization;

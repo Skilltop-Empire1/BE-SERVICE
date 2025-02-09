@@ -31,6 +31,9 @@ exports.addEmployee = async (req,res) => {
     }
 
     try {
+        const emailExist = await User.findOne({where:{email}})
+        if(emailExist) return res.status(400).json({message:`A user with this email:${email} already exist`})
+        
        let profileUrl = null
        if(req.file){
         const result =  await cloudinary.uploader.upload(req.file.path,{
@@ -42,8 +45,8 @@ exports.addEmployee = async (req,res) => {
         profileUrl = result.url
         fs.unlinkSync(req.file.path)
        } 
-
-       const createEmployee = await User.create({
+    
+        const createEmployee = await User.create({
         firstName,
         lastName,
         email,

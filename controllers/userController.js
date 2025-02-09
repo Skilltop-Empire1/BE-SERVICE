@@ -25,7 +25,7 @@ class UserClass {
 
   // ****************************************************************************************
   signup = async (req, res) => {
-    const { email, password, username, subCode } = req.body;
+    const { email, password, username, subCode, name } = req.body;
 
     const authorizedUser = true;
     if (!authorizedUser) {
@@ -57,13 +57,14 @@ class UserClass {
     } catch (error) {
       throw error;
     }
-
+    
     //checking if the subscription code exist
-    const codeExist = await Code.findOne({
-      where: {code:subCode}
-    })
+    const codeExist = await Code.findOne({where: {code:subCode}})
     if(!codeExist){
       return res.status(404).json({msg: "Invalid subscription code"})
+    }
+    if (codeExist.email !== email || codeExist.businessName !== username ){
+      return res.status(404).json({msg: "Email or business name is not subscribed"})
     }
 
     // creating organization name
@@ -278,6 +279,39 @@ await notifyUsers(recipientIds, message, { type: "firstLogin", user: userIsRegis
       throw error      
     }
   }// end of method
+
+  // **************************************************
+  updateUser = async (req, res) =>{
+    const { firstName, lastName, department, phoneNo } = req.body
+
+    try {
+      //validate details
+      const { error } = userValidation.updateUserValidation.validate(req.body);
+      if (error) {
+        return res.status(404).json(error.details[0].message);
+      }
+
+      const {email} = req.user
+      const user = User.findOne({where: {email}})
+      if(!user){
+        res.status(404).json({msg: "User does not exist"})
+      }
+      const updateUserDetails = await User.update(
+        { firstName, lastName, department, phoneNo }, { where: { email: email } 
+      });
+      if(updateUserDetails){
+        return res.status(201).json({mse: "User details updated sucessfully"})
+      }
+      return res.status(404).json({msg: "update not successful"})
+  
+    } catch (error) {
+      throw error
+    }
+      
+    
+
+
+  } //end of method
 
 } //class end
 // instance of class creation

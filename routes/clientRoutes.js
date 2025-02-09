@@ -7,6 +7,8 @@ const {
     getClient, 
     createClient 
 } = require("../controllers/ClientController");
+const upload =  require("../middlewares/multer")
+const {loginJWTAuth} = require("../middlewares/authenticationMiddleware")
 
 /**
  * @swagger
@@ -43,7 +45,7 @@ const {
  *       500:
  *         description: Error creating client
  */
-router.post("/create", createClient);
+router.post("/create",loginJWTAuth, createClient);
 
 /**
  * @swagger
@@ -58,7 +60,7 @@ router.post("/create", createClient);
  *       500:
  *         description: Error fetching clients
  */
-router.get("/getall", getClient);
+router.get("/getall",loginJWTAuth, getClient);
 
 /**
  * @swagger
@@ -82,7 +84,7 @@ router.get("/getall", getClient);
  *       500:
  *         description: Error fetching client
  */
-router.get("/getbyid/:clientId", getClientbyid);
+router.get("/getbyid/:clientId",loginJWTAuth, getClientbyid);
 
 /**
  * @swagger
@@ -128,7 +130,7 @@ router.get("/getbyid/:clientId", getClientbyid);
  *       500:
  *         description: Error updating client
  */
-router.put("/update/:clientId", updateClient);
+router.put("/update/:clientId",loginJWTAuth, updateClient);
 
 /**
  * @swagger
@@ -152,6 +154,6 @@ router.put("/update/:clientId", updateClient);
  *       500:
  *         description: Error deleting client
  */
-router.delete("/delete/:clientId", deleteClient);
+router.delete("/delete/:clientId",loginJWTAuth, deleteClient);
 
 module.exports = router;

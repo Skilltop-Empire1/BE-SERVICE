@@ -35,10 +35,20 @@ const changePasswordValidation = Joi.object({
   confirmPassword: Joi.string().required()
 })
 
+
+const updateUserValidation = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  department: Joi.string().required(),
+  phoneNo: Joi.string().required()
+})
+
 module.exports = {
     userValidation,
     loginValidation,
     forgotPasswordValidation,
     newPasswordValidation,
-    changePasswordValidation
+    changePasswordValidation,
+    updateUserValidation
+    
 }

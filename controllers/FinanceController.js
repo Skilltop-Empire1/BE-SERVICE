@@ -1,10 +1,46 @@
-const { Finance } = require("../models");
-
+const { User, Finance } = require("../models");
+const cloudinary = require("../config/cloudinary");
+const multer = require("../middlewares/multer");
 // CREATE: Add a new finance record
 const createFinanceRecord = async (req, res) => {
   try {
-    const financeData = req.body;
-    const newRecord = await Finance.create(financeData);
+    const { type,
+      expenseCategory,
+      expensesDescription,
+      amount,
+      dateOfExpenses,
+      dendorPayee,
+      paymentMethod,
+      capexCategory,
+      note,
+      assetDescription,
+      expectedLifeSpan,
+      depreciationRate
+    } = req.body;
+    let url;
+   if(req.file){
+    const result = await cloudinary.uploader.upload(req.file.path,{
+        folder:"receipt",
+        width:300,
+        crop:"scale"
+    })
+     url = result.url
+   }
+    const newRecord = await Finance.create(
+   {  type,
+      expenseCategory,
+      expensesDescription,
+      amount,
+      dateOfExpenses,
+      dendorPayee,
+      paymentMethod,
+      fileUrl:url,
+      capexCategory,
+      note,
+      assetDescription,
+      expectedLifeSpan,
+      depreciationRate
+    })
     return res.json({
       status:200,
       success: true,
@@ -18,6 +54,14 @@ const createFinanceRecord = async (req, res) => {
 // READ: Get all finance records
 const getFinanceRecords = async (req, res) => {
   try {
+    const {opex,capex} = req.query
+    const where = {}
+    if(opex){
+      where.type = 'OPEX'
+    }
+    if(capex){
+      where.type = 'CAPEX'
+    }
     const records = await Finance.findAll();
     res.status(200).json(records);
   } catch (error) {
