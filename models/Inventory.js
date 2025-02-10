@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     Inventory.associate = (models) => {
       Inventory.belongsTo(models.Organization);
       Inventory.belongsTo(models.User);
+      Inventory.belongsTo(models.Category, { foreignKey: 'categoryId' });
+
     };
   
     return Inventory;

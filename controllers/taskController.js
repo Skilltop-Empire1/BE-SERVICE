@@ -1,6 +1,9 @@
 const {Task,Service,User} = require("../models")
 const cloudinary = require("../config/cloudinary")
 const taskValiadtion = require("../validations/taskValidation")
+const { notifyUser, notifyUsers } = require("../controllers/notificationsController")
+
+
 
 
 const createTask = async function (req,res) {
@@ -39,6 +42,32 @@ try {
             description:desc,
             fileUrl
         })
+//]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]     JAMES CODE  ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+        const assigner = req.user; 
+        console.log("assigner is ======================", assigner);
+        console.log("assignee", assigned);
+
+// Define messages for each group (you can further customize these)
+const assignerMessage = `You assigned a new task "${task.taskTitle}" to ${assigned.email}.`;
+const assigneeMessage = `You have been assigned a new task: "${task.taskTitle}" by ${assigner.email}.`;
+const generalMessage = `New task created: "${task.taskTitle}", assigned to "${assigned.email}".`;
+
+
+// Notify assigner (if needed and if not the same as assignee)
+if (assigner.userId !== assigned.userId) {
+    await notifyUser(assigner.userId, assignerMessage, { type: "taskAssignment", task });
+  }
+
+// Notify assignee
+await notifyUser(assigned.userId, assigneeMessage, { type: "taskAssignment", task });
+
+
+// Notify every member (you might want to exclude duplicates if desired)
+const allUsers = await User.findAll({ attributes: ["userId"] });
+const allUserIds = allUsers.map((u) => u.userId);
+await notifyUsers(allUserIds, generalMessage, { type: "taskAssignment", task });
+
+//]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
         res.status(201).json(task)
    
 } catch (error) {
@@ -117,6 +146,37 @@ const editTask = async function (req,res){
         description:desc || task.description,
         fileUrl:fileUrl || task.fileUrl
 })
+
+//]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+const updater = req.user;
+const assignee = await User.findByPk(updateTask.userId);
+
+// Prepare messages
+const updaterMessage = `You updated the task "${updateTask.taskTitle}".`;
+const assigneeMessage =
+  updater.userId === assignee.userId
+    ? `You have updated your task status for "${updateTask.taskTitle}".`
+    : `${updater.email} has updated your task status for "${updateTask.taskTitle}".`;
+const generalMessage = `Task "${updateTask.taskTitle}" assigned to ${assignee.email} has been updated.`;
+
+// Notify the assignee
+await notifyUser(assignee.userId, assigneeMessage, { type: "taskUpdate", task: updateTask });
+
+// Notify the updater if different from the assignee
+if (updater.userId !== assignee.userId) {
+  await notifyUser(updater.userId, updaterMessage, { type: "taskUpdate", task: updateTask });
+}
+
+// Notify all users 
+const allUsers = await User.findAll({ attributes: ["userId"] });
+const allUserIds = allUsers
+  .map((u) => u.userId)
+  .filter((id) => id !== updater.userId && id !== assignee.userId); // Avoid duplicate notifications
+
+await notifyUsers(allUserIds, generalMessage, { type: "taskUpdate", task: updateTask });
+//]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+
+
     res.status(201).json({msg:"Task updated successfully",data:updateTask})
    } catch (error) {
     
