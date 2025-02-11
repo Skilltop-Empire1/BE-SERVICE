@@ -7,8 +7,8 @@ const {
   updateFinanceRecord,
   deleteFinanceRecord,
 } = require("../controllers/FinanceController");
-const upload =  require("../middlewares/multer")
-const {loginJWTAuth} = require("../middlewares/authenticationMiddleware")
+const upload = require("../middlewares/multer");
+const { loginJWTAuth } = require("../middlewares/authenticationMiddleware");
 
 /**
  * @swagger
@@ -55,22 +55,29 @@ const {loginJWTAuth} = require("../middlewares/authenticationMiddleware")
  *       500:
  *         description: Error creating finance record
  */
-router.post("/create",loginJWTAuth, createFinanceRecord);
+router.post("/create", loginJWTAuth, createFinanceRecord);
 
 /**
  * @swagger
  * /finance:
  *   get:
- *     summary: Get all finance records
+ *     summary: Get all finance records with optional filtering by CAPEX and OPEX
  *     tags:
  *       - Finance
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [capex, opex]
+ *         description: Filter records by type (CAPEX or OPEX)
  *     responses:
  *       200:
  *         description: List of all finance records
  *       500:
  *         description: Error fetching finance records
  */
-router.get("/get",loginJWTAuth, getFinanceRecords);
+router.get("/get", loginJWTAuth, getFinanceRecords);
 
 /**
  * @swagger
@@ -94,7 +101,7 @@ router.get("/get",loginJWTAuth, getFinanceRecords);
  *       500:
  *         description: Error fetching finance record
  */
-router.get("/getbyid/:financeId",loginJWTAuth, getFinanceRecordById);
+router.get("/getbyid/:financeId", loginJWTAuth, getFinanceRecordById);
 
 /**
  * @swagger
@@ -150,7 +157,7 @@ router.get("/getbyid/:financeId",loginJWTAuth, getFinanceRecordById);
  *       500:
  *         description: Error updating finance record
  */
-router.put("/update/:financeId",loginJWTAuth, updateFinanceRecord);
+router.put("/update/:financeId", loginJWTAuth, updateFinanceRecord);
 
 /**
  * @swagger
@@ -174,6 +181,6 @@ router.put("/update/:financeId",loginJWTAuth, updateFinanceRecord);
  *       500:
  *         description: Error deleting finance record
  */
-router.delete("/delete/:financeId",loginJWTAuth, deleteFinanceRecord);
+router.delete("/delete/:financeId", loginJWTAuth, deleteFinanceRecord);
 
 module.exports = router;
