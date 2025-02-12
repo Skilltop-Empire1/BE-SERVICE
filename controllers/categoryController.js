@@ -98,7 +98,7 @@ exports.getAllCategory = async (req, res) => {
 
     const formattedCategoryData = categoryData.map((category) => ({
         categoryId: category.categoryId,
-      name: inventory.itemName,
+      name: category.name,
     
       //addedDate: inventory.createdAt,
     }));
