@@ -85,7 +85,7 @@ const { loginJWTAuth } = require("../middlewares/authenticationMiddleware");
  *             example:
  *               error: "Internal server error"
  */
-router.post("/create", upload.single("fileUrl"), taskController.createTask);
+router.post("/create", upload.single("fileUrl"), loginJWTAuth,taskController.createTask);
 
 /**
  * @swagger
