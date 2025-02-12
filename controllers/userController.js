@@ -34,10 +34,10 @@ class UserClass {
         .json({ msg: "New users not allowed, Please contact support" });
     }
     // validate users
-    const { error } = userValidation.userValidation.validate(req.body);
-    if (error) {
-      return res.status(404).json(error.details[0].message);
-    }
+    // const { error } = userValidation.userValidation.validate(req.body);
+    // if (error) {
+    //   return res.status(404).json(error.details[0].message);
+    // }
 
     // Check the organization if exist
     const orgExist = await Organization.findOne({
@@ -59,13 +59,13 @@ class UserClass {
     }
     
     //checking if the subscription code exist
-    const codeExist = await Code.findOne({where: {code:subCode}})
-    if(!codeExist){
-      return res.status(404).json({msg: "Invalid subscription code"})
-    }
-    if (codeExist.email !== email || codeExist.businessName !== username ){
-      return res.status(404).json({msg: "Email or business name is not subscribed"})
-    }
+    // const codeExist = await Code.findOne({where: {code:subCode}})
+    // if(!codeExist){
+    //   return res.status(404).json({msg: "Invalid subscription code"})
+    // }
+    // if (codeExist.email !== email || codeExist.businessName !== username ){
+    //   return res.status(404).json({msg: "Email or business name is not subscribed"})
+    // }
 
     // creating organization name
     const createOrg = await Organization.create({ name: username });
