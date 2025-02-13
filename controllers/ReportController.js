@@ -1,4 +1,4 @@
-const { Report } = require("../models");
+const { User, Report } = require("../models");
 
 // CREATE: Add a new report
 const createReport = async (req, res) => {
@@ -14,6 +14,7 @@ const createReport = async (req, res) => {
     res.status(500).json({ error: "Error creating report", details: error.message });
   }
 };
+
 const getReports = async (req, res) => {
   try {
     const reports = await Report.findAll({
