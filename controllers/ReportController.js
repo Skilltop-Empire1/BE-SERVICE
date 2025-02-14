@@ -21,11 +21,11 @@ const getReports = async (req, res) => {
       include: [
         {
           model: User,
-          as: "user",
           attributes: ["id", "name", "email"],
         },
       ],
     });
+    
     res.status(200).json(reports);
   } catch (error) {
     res.status(500).json({ error: "Error fetching reports", details: error.message });
