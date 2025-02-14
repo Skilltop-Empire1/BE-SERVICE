@@ -162,7 +162,7 @@ router.get("/:id", taskController.getTask);
  *       404:
  *         description: Task not found
  */
-router.put("/:id", upload.single("fileUrl"), taskController.editTask);
+router.put("/:id", upload.single("fileUrl"),loginJWTAuth, taskController.editTask);
 
 /**
  * @swagger
