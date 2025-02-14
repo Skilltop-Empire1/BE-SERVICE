@@ -119,17 +119,23 @@ const getTask = async function (req,res){
 }
 
 const editTask = async function (req,res){
-    const {title,servName,email,priority,dueDate,taskStatus,desc} = req.body
+    const {taskTitle,servName,email,priority,dueDate,taskStatus,desc} = req.body
    try {
     const {id} = req.params
-    const task = await Task.findByPK(id)
+    const task = await Task.findByPk(id)
     if(!task) return res.status(404).json({msg:"Task not found"})
-    const assigned = await User.findOne({where:{email}})
-    const serviName = await Service.findOne({where:{serviceName:servName}})
-    if(!assigned) return res.status(404).json({msg:"Assined to not found"})
-    const fileUrl = task.fileUrl
+    let assigned = task.userId
+    if(email){
+        assigned = await User.findOne({where:{email}})
+    }
+    let serviName = task.serviceId
+    if(servName){
+        serviName = await Service.findOne({where:{serviceName:servName}})
+    }
+    if(!assigned) return res.status(404).json({msg:"Assigned to not found"})
+    let fileUrl = task.fileUrl
     if(req.file){
-        const result = await cloudinary.Uploader.upload(req.file.path,{
+        const result = await cloudinary.uploader.upload(req.file.path,{
             folder:"image",
             width:300,
             crop:"scale"
@@ -137,7 +143,7 @@ const editTask = async function (req,res){
         fileUrl = result.url
     }
     const updateTask = await task.update({
-        taskTitle:title || task.taskTitle,
+        taskTitle:taskTitle || task.taskTitle,
         service:serviName.serviceId || task.service,
         assignTo:assigned.userId || task.assignTo,
         priority:priority || task.priority,
@@ -150,7 +156,6 @@ const editTask = async function (req,res){
 //]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 const updater = req.user;
 const assignee = await User.findByPk(updateTask.userId);
-
 // Prepare messages
 const updaterMessage = `You updated the task "${updateTask.taskTitle}".`;
 const assigneeMessage =
@@ -158,7 +163,6 @@ const assigneeMessage =
     ? `You have updated your task status for "${updateTask.taskTitle}".`
     : `${updater.email} has updated your task status for "${updateTask.taskTitle}".`;
 const generalMessage = `Task "${updateTask.taskTitle}" assigned to ${assignee.email} has been updated.`;
-
 // Notify the assignee
 await notifyUser(assignee.userId, assigneeMessage, { type: "taskUpdate", task: updateTask });
 
@@ -166,7 +170,6 @@ await notifyUser(assignee.userId, assigneeMessage, { type: "taskUpdate", task: u
 if (updater.userId !== assignee.userId) {
   await notifyUser(updater.userId, updaterMessage, { type: "taskUpdate", task: updateTask });
 }
-
 // Notify all users 
 const allUsers = await User.findAll({ attributes: ["userId"] });
 const allUserIds = allUsers
@@ -175,7 +178,6 @@ const allUserIds = allUsers
 
 await notifyUsers(allUserIds, generalMessage, { type: "taskUpdate", task: updateTask });
 //]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
-
 
     res.status(201).json({msg:"Task updated successfully",data:updateTask})
    } catch (error) {
