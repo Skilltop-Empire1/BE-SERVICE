@@ -55,15 +55,13 @@ const createReport = async (req, res) => {
 const getReports = async (req, res) => {
     const {userId} = req.user
     const user = await User.findByPk(userId)
-    if(!user) return res.status(404).json({msg:"user not found"})
-    const orgId = user.orgId
+  if(!user) return res.status(404).json({msg:"user not found"})
   try {
-    const reports = await Report.findAll({
+    const reports = await Report.findAll({where: { userId },
       include: [
         {
           model: User,
           attributes: ["userId", "email"],
-          where:{orgId}
         },
       ],
     });
