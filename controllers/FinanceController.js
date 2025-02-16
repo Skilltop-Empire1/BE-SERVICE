@@ -64,9 +64,12 @@ const getFinanceRecords = async (req, res) => {
     const { opex, capex } = req.query;
     const where = {};
 
-    if (opex) where.type = "OPEX";
-    if (capex) where.type = "CAPEX";
-
+    if (opex) {
+      where.type = "OPEX"
+    }
+    if (capex){ 
+      where.type = "CAPEX"
+    }
     const records = await Finance.findAll({ where });
     res.status(200).json(records);
   } catch (error) {
