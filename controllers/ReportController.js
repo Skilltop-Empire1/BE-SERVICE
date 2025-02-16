@@ -57,7 +57,7 @@ const getReports = async (req, res) => {
     const user = await User.findByPk(userId)
   if(!user) return res.status(404).json({msg:"user not found"})
   try {
-    const reports = await Report.findAll({where: { userId },
+    const reports = await Report.findAll({
       include: [
         {
           model: User,
