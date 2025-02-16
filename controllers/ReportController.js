@@ -21,7 +21,7 @@ const getReports = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["id", "name", "email"],
+          attributes: ["userId", "email"],
         },
       ],
     });
