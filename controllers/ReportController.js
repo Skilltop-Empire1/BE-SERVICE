@@ -1,27 +1,69 @@
 const { User, Report } = require("../models");
+const cloudinary = require("../config/cloudinary")
 
 // CREATE: Add a new report
 const createReport = async (req, res) => {
+  const {userId} = req.user
+  const user = await User.findByPk(userId)
+  if(!user) return res.status(404).json({msg:"user not found"})
+  const orgId = user.orgId
   try {
-    const reportData = req.body;
-    const newReport = await Report.create(reportData);
-    return res.json({
-      status:200,
+    const {
+      reportTitle,
+      reportType,
+      dateRangeFrom,
+      dateRangeTo,
+      report,
+    } = req.body;
+
+    // Upload receipt if it exists
+    let fileUrl = null;
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "receipt",
+        width: 300,
+        crop: "scale",
+      });
+      fileUrl = result.secure_url;
+    }
+
+    // Create report
+    const newReport = await Report.create({
+      reportTitle,
+      reportType,
+      dateRangeFrom,
+      dateRangeTo,
+      report,
+      fileUrl,
+    });
+
+    return res.status(201).json({
       success: true,
       data: newReport,
     });
   } catch (error) {
-    res.status(500).json({ error: "Error creating report", details: error.message });
+    console.error("Error creating report:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error creating report",
+      error: error.message,
+    });
   }
 };
 
+
 const getReports = async (req, res) => {
+    const {userId} = req.user
+    const user = await User.findByPk(userId)
+    if(!user) return res.status(404).json({msg:"user not found"})
+    const orgId = user.orgId
   try {
     const reports = await Report.findAll({
       include: [
         {
           model: User,
           attributes: ["userId", "email"],
+          where:{orgId}
         },
       ],
     });
@@ -36,7 +78,14 @@ const getReports = async (req, res) => {
 const getReportById = async (req, res) => {
   try {
     const { reportId } = req.params;
-    const report = await Report.findByPk(reportId);
+    const report = await Report.findByPk(reportId, {
+      include: [
+        {
+          model: User,
+          attributes: ["userId", "email"],
+        },
+      ],
+    });
     if (!report) {
       return res.status(404).json({ error: "Report not found" });
     }

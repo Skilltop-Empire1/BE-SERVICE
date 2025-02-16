@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middlewares/multer");
 const { createReport, getReports, getReportById, updateReport, deleteReport } = require("../controllers/ReportController");
 const {loginJWTAuth} = require("../middlewares/authenticationMiddleware")
 
@@ -37,7 +38,7 @@ const {loginJWTAuth} = require("../middlewares/authenticationMiddleware")
  *       500:
  *         description: Error creating report
  */
-router.post("/create",loginJWTAuth, createReport);
+router.post("/create",loginJWTAuth, upload.single("fileUrl"), createReport);
 
 /**
  * @swagger
