@@ -188,7 +188,7 @@ await notifyUsers(allUserIds, generalMessage, { type: "taskUpdate", task: update
 const deleteTask = async function (req,res){
     try {
         const {id} = req.params
-        const task = await Task.destroy({where:{id}})
+        const task = await Task.destroy({where:{taskId:id}})
         if(!task) return res.status(404).json({msg:"Id not found"})
         res.status(200).json({msg:"task deleted successfully"})
     } catch (error) {
