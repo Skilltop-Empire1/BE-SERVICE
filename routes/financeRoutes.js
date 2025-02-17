@@ -55,7 +55,7 @@ const { loginJWTAuth } = require("../middlewares/authenticationMiddleware");
  *       500:
  *         description: Error creating finance record
  */
-router.post("/create", loginJWTAuth, createFinanceRecord);
+router.post("/create", loginJWTAuth,upload.single("fileUrl"), createFinanceRecord);
 
 /**
  * @swagger

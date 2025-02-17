@@ -4,6 +4,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
        },
+       userId: {
+        type: DataTypes.UUID,
+        references: { model: 'Users', key: 'userId' },
+      },
       reportTitle: DataTypes.STRING,
       reportType: DataTypes.STRING,
       dateRangeFrom: DataTypes.DATEONLY,

@@ -1,5 +1,6 @@
 const { User, Report } = require("../models");
-const cloudinary = require("../config/cloudinary")
+const cloudinary = require("../config/cloudinary");
+const { where } = require("sequelize");
 
 // CREATE: Add a new report
 const createReport = async (req, res) => {
@@ -35,6 +36,7 @@ const createReport = async (req, res) => {
       dateRangeTo,
       report,
       fileUrl,
+      userId
     });
 
     return res.status(201).json({
@@ -57,7 +59,7 @@ const getReports = async (req, res) => {
     const user = await User.findByPk(userId)
   if(!user) return res.status(404).json({msg:"user not found"})
   try {
-    const reports = await Report.findAll({
+    const reports = await Report.findAll({ where: {userId},
       include: [
         {
           model: User,
