@@ -1,3 +1,5 @@
+const { validate } = require("node-cron");
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User",{
       userId: { type: DataTypes.UUID,
@@ -5,14 +7,23 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
        },
       email: {type: DataTypes.STRING,allowNull:false},
+      firstName: {type: DataTypes.STRING,allowNull:true},
+      lastName: {type: DataTypes.STRING,allowNull:true},
       password: {type: DataTypes.STRING,allowNull:false},
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      // name: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
       department: DataTypes.STRING,
+      phoneNo: DataTypes.STRING,
       employeeType: DataTypes.STRING,
-      status: DataTypes.STRING,
+      status: {
+        type: DataTypes.STRING,
+        defaultValue:"Active",
+        validate:{
+          isIn:[["Active","Busy","Offline"]]
+        }
+      },
       currentTask: DataTypes.STRING,
       additionalNotes: DataTypes.TEXT,
       profileUrl: DataTypes.STRING,
@@ -99,21 +110,27 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "Super Admin",
       },
+      isFirstLogin: {  // Added isFirstLogin field
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+    },
     
     });
   
     User.associate = (models) => {
       User.belongsTo(models.Organization,{
-        foreignKey: "orgId", 
+        foreignKey: "orgId",
         as: "organization"
         
       });
       User.hasMany(models.Service);
       User.hasMany(models.Task);
+      // User.hasMany(models.Task);
       User.hasMany(models.Report);
       User.hasOne(models.Finance);
       User.hasMany(models.Message);
       User.hasOne(models.Inventory);
+      User.hasMany(models.Category, { foreignKey: "userId" });
     };
   
     return User;

@@ -9,6 +9,7 @@ const cron = require("node-cron")
 const {initializeSocket} = require("./config/socket")
 const server = http.createServer(app)
 const io =initializeSocket(server)
+const swaggerDocs = require("./swagger");
 
 require("./models")
 
@@ -36,25 +37,37 @@ app.use(cors(corsOptions));
 app.use(morgan("tiny"));
 
 const userRoute = require("./routes/userRoutes");
+const employeeRoute = require("./routes/employeeRoutes");
 const serviceRoute = require("./routes/serviceRoutes");
 const taskRoute = require("./routes/taskRoutes");
 const clientRoute = require("./routes/clientRoutes");
 const reportRoute = require("./routes/reportRoutes");
 const financeRoute = require("./routes/financeRoutes");
 const inventoryRoute = require("./routes/inventoryRoutes");
+const chatRoute = require("./routes/chatRoutes")
 const messageRoute = require("./routes/messageRoutes")
+const paymentRoute = require("./routes/paymentRoutes")
+const categoryRoute = require("./routes/categoryRoute")
 
 
 
-app.use("/api/IMS/user", userRoute);
-app.use("/api/IMS/service", serviceRoute);
-app.use("/api/IMS/TASK", taskRoute);
-app.use("/api/IMS/client", clientRoute);
-app.use("/api/IMS/report", reportRoute);
-app.use("/api/IMS/finance", financeRoute);
-app.use("/api/IMS/inventory", inventoryRoute);
-app.use("/api/IMS/message", messageRoute);
+app.use("/user", userRoute);
+app.use("/employee", employeeRoute);
+app.use("/service", serviceRoute);
+app.use("/TASK", taskRoute);
+app.use("/client", clientRoute);
+app.use("/report", reportRoute);
+app.use("/finance", financeRoute);
+app.use("/inventory", inventoryRoute);
+app.use("/chat", chatRoute);
+app.use("/message", messageRoute);
+app.use("/payment", paymentRoute);
+app.use("/category", categoryRoute)
 
+
+
+const client_url = process.env.CLIENT_URL || "http://localhost:5000";
+swaggerDocs(app, client_url);
 
 
 cron.schedule('*/30 * * * *', async ()=> {
@@ -65,9 +78,6 @@ cron.schedule('*/30 * * * *', async ()=> {
     console.error("failed to update tasks", error.message)
   }
 })
-
-
-
 
 
 app.set("io",io)

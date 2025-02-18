@@ -1,6 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
     const Client = sequelize.define("Client",{
-      clientId: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+       clientId: { type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+       },
+       userId: {
+        type: DataTypes.UUID,
+        references: { model: 'Users', key: 'userId' },
+      },
       name: DataTypes.STRING,
       phoneNo: DataTypes.STRING,
       email: DataTypes.STRING,
